@@ -46,6 +46,13 @@
         .sales-counter .pulse { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(1.3); } }
         .loading-bar { position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 9999; }
+        #promoBanner { position: fixed; top: 0; left: 0; width: 100%; z-index: 9990; background: linear-gradient(135deg, #f59e0b, #ef4444, #f59e0b); background-size: 200% 100%; animation: promoBg 2s linear infinite; padding: 10px 0; text-align: center; box-shadow: 0 2px 20px rgba(245,158,11,0.5); }
+        @keyframes promoBg { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+        .promo-banner-inner { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        #promoBannerText { color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 1px; text-shadow: 0 1px 4px rgba(0,0,0,0.3); font-family: 'Outfit', sans-serif; }
+        .promo-banner-icon { font-size: 20px; animation: shake 0.5s infinite alternate; }
+        @keyframes shake { 0% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
+        .promo-active-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg,#f59e0b,#ef4444); color: #fff; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; margin-left: 8px; animation: pulse 1.5s infinite; }
         .loading-bar .bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
         .container { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
         .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 30px; }
@@ -221,6 +228,17 @@
         <div class="tagline">Seu fornecedor de itens no MT2 Zeta</div>
         <div class="sales-counter"><div class="pulse"></div><span id="salesCount">0</span> vendas realizadas</div>
     </div>
+    <!-- Banner de Promoção -->
+    <div id="promoBanner" style="display:none;">
+        <div class="promo-banner-inner">
+            <span class="promo-banner-icon">🎉</span>
+            <span id="promoBannerText">PROMOÇÃO ESPECIAL!</span>
+            <span class="promo-banner-icon">🎉</span>
+        </div>
+    </div>
+    <!-- Canvas de confetes -->
+    <canvas id="confettiCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;display:none;"></canvas>
+
     <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="switchTab('consumiveis',this)">Consumíveis</button>
@@ -504,6 +522,7 @@
                     <button class="adm-tab active" onclick="switchAdmTab('estoque',this)">📦 Estoque</button>
                     <button class="adm-tab" onclick="switchAdmTab('precos',this)">💰 Preços</button>
                     <button class="adm-tab" onclick="switchAdmTab('vendas',this)">📊 Vendas</button>
+                    <button class="adm-tab" onclick="switchAdmTab('promo',this)">🎉 Promoção</button>
                 </div>
 
                 <!-- ABA ESTOQUE -->
@@ -550,6 +569,21 @@
                     <div class="sync-status" id="syncStatusPrecos"></div>
                 </div>
 
+                <!-- ABA PROMOÇÃO -->
+                <div class="adm-panel" id="adm-promo">
+                    <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
+                        <h3>🎉 Promoção Especial</h3>
+                        <div id="promo-status-adm" style="text-align:center;padding:10px;border-radius:10px;margin-bottom:14px;font-weight:700;font-size:14px;"></div>
+                        <span class="field-label">Desconto (%):</span>
+                        <input type="number" class="field-input" id="adm-promo-pct" step="5" min="0" max="100" placeholder="Ex: 20">
+                        <span class="field-label">Mensagem (opcional):</span>
+                        <input type="text" class="field-input" id="adm-promo-msg" placeholder="Ex: Promoção de fim de semana!">
+                    </div>
+                    <button class="save-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);" onclick="togglePromo(true)">🚀 Ativar Promoção</button>
+                    <button class="save-btn" style="background:linear-gradient(135deg,#6b7280,#4b5563);margin-top:8px;" onclick="togglePromo(false)">❌ Desativar Promoção</button>
+                    <div class="sync-status" id="syncStatusPromo"></div>
+                </div>
+
                 <!-- ABA VENDAS -->
                 <div class="adm-panel" id="adm-vendas">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
@@ -576,7 +610,8 @@
         const DEFAULT_DATA = {
             stock: { pergaminho: 5000, leitura: 200, metal: 50, gold: 500, bau: 10 },
             prices: { pergaminho: 10, pergaminho_desc: 9, leitura: 1.50, leitura_desc: 1.40, metal: 10, metal_desc: 9, gold: 0.40, bau: 15 },
-            sales: 0
+            sales: 0,
+            promo: { active: false, pct: 0, msg: '' }
         };
         let shopData = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
@@ -604,6 +639,7 @@
                 setTimeout(() => showLoading(0), 500);
             }
             renderAll();
+            if (shopData.promo && shopData.promo.active) setTimeout(launchConfetti, 800);
         }
 
         async function saveDataOnline() {
@@ -635,6 +671,8 @@
             document.getElementById('stock-gold').textContent = fmtGold(shopData.stock.gold);
             document.getElementById('stock-bau').textContent = shopData.stock.bau;
             animateSalesCount(shopData.sales);
+            showPromoBanner();
+            updatePromoAdmStatus();
 
             // Atualiza textos de desconto dinamicamente
             const p = shopData.prices;
@@ -745,6 +783,111 @@
             updateCart();
         }
 
+        // ===== PROMOÇÃO / CONFETES =====
+        let confettiAnim = null;
+        function launchConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            canvas.style.display = 'block';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+            const pieces = [];
+            const colors = ['#f59e0b','#ef4444','#7c5bf5','#34d399','#3b82f6','#ec4899','#fff'];
+            for (let i = 0; i < 150; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    w: Math.random() * 10 + 5,
+                    h: Math.random() * 6 + 3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: Math.random() * 4 + 2,
+                    angle: Math.random() * 360,
+                    spin: (Math.random() - 0.5) * 8
+                });
+            }
+            let tick = 0;
+            if (confettiAnim) cancelAnimationFrame(confettiAnim);
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.angle * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = Math.max(0, 1 - tick / 180);
+                    ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+                    ctx.restore();
+                    p.x += p.vx; p.y += p.vy; p.angle += p.spin;
+                });
+                tick++;
+                if (tick < 200) confettiAnim = requestAnimationFrame(draw);
+                else { canvas.style.display = 'none'; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+            }
+            draw();
+        }
+
+        function applyPromoToCart(pct) {
+            // Aplicado no updateCart dinamicamente
+        }
+
+        function showPromoBanner() {
+            const promo = shopData.promo;
+            if (!promo || !promo.active) { document.getElementById('promoBanner').style.display = 'none'; return; }
+            const pct = promo.pct || 0;
+            const msg = promo.msg || '';
+            document.getElementById('promoBannerText').textContent = '🔥 ' + pct + '% DE DESCONTO EM TUDO!' + (msg ? ' — ' + msg : '');
+            document.getElementById('promoBanner').style.display = 'block';
+            // Empurra o conteúdo para baixo
+            document.querySelector('.container').style.paddingTop = '50px';
+        }
+
+        async function togglePromo(activate) {
+            const pct = parseFloat(document.getElementById('adm-promo-pct').value) || 0;
+            const msg = document.getElementById('adm-promo-msg').value || '';
+            const statusEl = document.getElementById('syncStatusPromo');
+            const admStatusEl = document.getElementById('promo-status-adm');
+
+            if (activate && pct <= 0) { alert('Digite um percentual de desconto!'); return; }
+
+            shopData.promo = { active: activate, pct: pct, msg: msg };
+            statusEl.textContent = activate ? '✅ Promoção ativada!' : '✅ Promoção desativada!';
+            statusEl.style.color = activate ? 'var(--green)' : 'var(--text-muted)';
+            admStatusEl.textContent = activate ? '🔥 PROMOÇÃO ATIVA: ' + pct + '% OFF' : '⭕ Sem promoção ativa';
+            admStatusEl.style.background = activate ? 'rgba(245,158,11,0.15)' : 'rgba(255,255,255,0.04)';
+            admStatusEl.style.color = activate ? '#f59e0b' : 'var(--text-muted)';
+
+            showPromoBanner();
+            if (activate) launchConfetti();
+            renderAll();
+            await saveDataOnline();
+            setTimeout(() => { statusEl.textContent = ''; }, 3000);
+        }
+
+        function updatePromoAdmStatus() {
+            const promo = shopData.promo;
+            const admStatusEl = document.getElementById('promo-status-adm');
+            if (!admStatusEl) return;
+            if (promo && promo.active) {
+                admStatusEl.textContent = '🔥 PROMOÇÃO ATIVA: ' + promo.pct + '% OFF';
+                admStatusEl.style.background = 'rgba(245,158,11,0.15)';
+                admStatusEl.style.color = '#f59e0b';
+                document.getElementById('adm-promo-pct').value = promo.pct;
+                document.getElementById('adm-promo-msg').value = promo.msg || '';
+            } else {
+                admStatusEl.textContent = '⭕ Sem promoção ativa';
+                admStatusEl.style.background = 'rgba(255,255,255,0.04)';
+                admStatusEl.style.color = 'var(--text-muted)';
+            }
+        }
+
+        function calcPriceWithPromo(item, qty) {
+            const base = calcPrice(item, qty);
+            const promo = shopData.promo;
+            if (promo && promo.active && promo.pct > 0) return base * (1 - promo.pct / 100);
+            return base;
+        }
+
         function fmtGold(val) {
             if (val >= 1000) return (val / 1000).toLocaleString('pt-BR', {maximumFractionDigits: 2}) + 'kkk';
             return val.toLocaleString('pt-BR') + 'kk';
@@ -780,8 +923,9 @@
                     else if (item === 'gold') semDesc = qty * p.gold;
                     else if (item === 'bau') semDesc = qty * p.bau;
 
-                    // Preço com desconto por item
-                    const comDesc = calcPrice(item, qty);
+                    // Preço com desconto por item + promoção
+                    const comDesc = calcPriceWithPromo(item, qty);
+                    const comDescSemPromo = calcPrice(item, qty);
 
                     totalSemDesc += semDesc;
                     totalComDesc += comDesc;
