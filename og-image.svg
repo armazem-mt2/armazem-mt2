@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0c0c0f"/>
+      <stop offset="100%" style="stop-color:#13121a"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7c5bf5"/>
+      <stop offset="100%" style="stop-color:#9b7aff"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(124,91,245,0)"/>
+      <stop offset="50%" style="stop-color:#7c5bf5"/>
+      <stop offset="100%" style="stop-color:rgba(124,91,245,0)"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="60" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Brilho central -->
+  <ellipse cx="600" cy="315" rx="420" ry="220" fill="rgba(124,91,245,0.10)" filter="url(#softglow)"/>
+
+  <!-- Linhas diagonais decorativas -->
+  <g opacity="0.05" transform="rotate(-40 600 315)">
+    <rect x="200" y="-400" width="70" height="1400" rx="35" fill="#7c5bf5"/>
+    <rect x="420" y="-400" width="40" height="1400" rx="20" fill="#7c5bf5"/>
+    <rect x="580" y="-400" width="90" height="1400" rx="45" fill="#7c5bf5"/>
+    <rect x="750" y="-400" width="30" height="1400" rx="15" fill="#7c5bf5"/>
+    <rect x="870" y="-400" width="60" height="1400" rx="30" fill="#7c5bf5"/>
+  </g>
+
+  <!-- Linha superior -->
+  <rect x="250" y="152" width="700" height="2" rx="1" fill="url(#lineGrad)" opacity="0.6"/>
+
+  <!-- Ícone caixa / armazém -->
+  <g transform="translate(600,230)" filter="url(#glow)">
+    <!-- Corpo da caixa -->
+    <rect x="-38" y="-8" width="76" height="52" rx="6" fill="none" stroke="url(#accentGrad)" stroke-width="3.5"/>
+    <!-- Tampa da caixa -->
+    <path d="M-42 -8 L0 -32 L42 -8" fill="none" stroke="url(#accentGrad)" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Divisória da tampa -->
+    <line x1="-18" y1="-20" x2="18" y2="-20" stroke="url(#accentGrad)" stroke-width="3" stroke-linecap="round"/>
+    <!-- Faixa horizontal da caixa -->
+    <line x1="-38" y1="12" x2="38" y2="12" stroke="url(#accentGrad)" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Título ARMAZÉM -->
+  <text x="600" y="340"
+    font-family="Arial Black, Arial, sans-serif"
+    font-weight="900"
+    font-size="108"
+    text-anchor="middle"
+    fill="url(#accentGrad)"
+    filter="url(#glow)"
+    letter-spacing="-2">ARMAZÉM</text>
+
+  <!-- Subtítulo -->
+  <text x="600" y="390"
+    font-family="Arial, sans-serif"
+    font-weight="300"
+    font-size="26"
+    text-anchor="middle"
+    fill="#8a8a9a"
+    letter-spacing="5">Seu fornecedor de itens no MT2 Zeta</text>
+
+  <!-- Linha inferior -->
+  <rect x="250" y="418" width="700" height="2" rx="1" fill="url(#lineGrad)" opacity="0.6"/>
+
+  <!-- Badges -->
+  <g transform="translate(600, 470)">
+    <!-- Badge 1 -->
+    <rect x="-240" y="-16" width="148" height="32" rx="16" fill="rgba(52,211,153,0.12)" stroke="rgba(52,211,153,0.3)" stroke-width="1"/>
+    <text x="-166" y="6" font-family="Arial,sans-serif" font-size="13" text-anchor="middle" fill="#34d399" font-weight="700">⚡ Entrega Rápida</text>
+    <!-- Badge 2 -->
+    <rect x="-74" y="-16" width="148" height="32" rx="16" fill="rgba(124,91,245,0.12)" stroke="rgba(124,91,245,0.3)" stroke-width="1"/>
+    <text x="0" y="6" font-family="Arial,sans-serif" font-size="13" text-anchor="middle" fill="#9b7aff" font-weight="700">🔒 Pagamento PIX</text>
+    <!-- Badge 3 -->
+    <rect x="92" y="-16" width="148" height="32" rx="16" fill="rgba(251,191,36,0.12)" stroke="rgba(251,191,36,0.3)" stroke-width="1"/>
+    <text x="166" y="6" font-family="Arial,sans-serif" font-size="13" text-anchor="middle" fill="#fbbf24" font-weight="700">✅ 100% Confiável</text>
+  </g>
+
+  <!-- URL -->
+  <text x="600" y="582"
+    font-family="Arial, sans-serif"
+    font-size="16"
+    text-anchor="middle"
+    fill="rgba(138,138,154,0.45)"
+    letter-spacing="2">armazem-mt2.pages.dev</text>
+</svg>
