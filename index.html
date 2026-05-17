@@ -11,7 +11,7 @@
     <meta property="og:description" content="Seu fornecedor de confiança de itens no MT2 Zeta. Compre Pergaminhos, Leituras, Metal Mágico, Gold e o Baú da Ceifadora. Entrega rápida!">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:image" content="https://ladock688-ship-it.github.io/armazem-mt2/og-image.png">
+    <meta property="og:image" content="https://armazem-mt2.github.io/armazem-mt2/og-image.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -111,7 +111,7 @@
         .cart-total-original { color: var(--text-muted); font-size: 12px; font-weight: 400; text-decoration: line-through; }
         .cart-total-value { color: var(--green); }
         .cart-discount-line { display: flex; justify-content: space-between; padding: 10px 18px; font-size: 14px; font-weight: 600; color: var(--green); background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); border-radius: 10px; margin-top: 8px; }
-        .discount-progress-wrap { margin-top: 14px; }
+        .discount-info-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; padding: 6px 10px; background: rgba(255,255,255,0.03); border-left: 2px solid rgba(124,91,245,0.3); border-radius: 0 6px 6px 0; line-height: 1.5; }
         .discount-progress-label { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .discount-progress-label span { color: var(--gold); font-weight: 700; }
         .discount-progress-bar { height: 8px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
@@ -750,42 +750,46 @@
         function updateCart() {
             const items = ['pergaminho','leitura','metal','gold','bau'];
             const names = { pergaminho:'Pergaminho de Aprimoramento', leitura:'Leitura de Arumaka', metal:'Metal Mágico+', gold:'Gold', bau:'Baú da Ceifadora' };
-            let cartHTML = '', total = 0, count = 0;
+            let cartHTML = '', totalComDesc = 0, totalSemDesc = 0, count = 0;
+            const p = shopData.prices;
+            const fmt = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+
             items.forEach(item => {
                 const qty = parseInt(document.getElementById('qty-' + item).value) || 0;
-                const sub = calcPrice(item, qty);
                 const subEl = document.getElementById('sub-' + item);
                 if (qty > 0) {
-                    subEl.textContent = 'R$ ' + sub.toFixed(2).replace('.', ',');
-                    total += sub; count++;
-                    const unit = item === 'gold' ? 'kk' : 'x';
-                    let detail = '';
-                    let priceHTML = 'R$ ' + sub.toFixed(2).replace('.', ',');
+                    count++;
+                    // Preço sem desconto por item (sempre preço cheio)
+                    let semDesc = 0;
+                    if (item === 'pergaminho') semDesc = (qty / 200) * p.pergaminho;
+                    else if (item === 'leitura') semDesc = qty * p.leitura;
+                    else if (item === 'metal') semDesc = qty * p.metal;
+                    else if (item === 'gold') semDesc = qty * p.gold;
+                    else if (item === 'bau') semDesc = qty * p.bau;
 
-                    // Calcula preço sem desconto por quantidade para mostrar riscado
-                    const p = shopData.prices;
-                    let subSemDesc = sub;
-                    if (item === 'pergaminho' && qty > 2000) {
-                        subSemDesc = (qty / 200) * p.pergaminho;
-                        detail = '✅ Desconto 10% aplicado!';
-                    } else if (item === 'leitura' && qty >= 50) {
-                        subSemDesc = qty * p.leitura;
-                        detail = '✅ Desconto aplicado!';
-                    } else if (item === 'metal' && qty >= 10) {
-                        subSemDesc = qty * p.metal;
-                        detail = '✅ Desconto 10% aplicado!';
-                    }
+                    // Preço com desconto por item
+                    const comDesc = calcPrice(item, qty);
 
-                    if (subSemDesc > sub) {
-                        priceHTML = '<s>R$ ' + subSemDesc.toFixed(2).replace('.', ',') + '</s>R$ ' + sub.toFixed(2).replace('.', ',');
-                    }
+                    totalSemDesc += semDesc;
+                    totalComDesc += comDesc;
 
-                    cartHTML += '<div class="cart-line"><div style="flex:1;min-width:0"><div class="cart-line-name">' + names[item] + '</div><div class="cart-line-detail">' + detail + '</div></div><div class="cart-line-right"><div class="cart-qty-ctrl"><button class="cart-qty-btn" onclick="cartChangeQty(\'' + item + '\',-1)">−</button><span class="cart-qty-num">' + qty + (item === 'gold' ? 'kk' : '') + '</span><button class="cart-qty-btn" onclick="cartChangeQty(\'' + item + '\',1)">+</button></div><div class="cart-line-price">' + priceHTML + '</div></div></div>';
+                    subEl.textContent = fmt(comDesc);
+
+                    // Verifica se tem desconto por quantidade neste item
+                    const temDescItem = comDesc < semDesc;
+                    const detail = temDescItem ? '✅ Desconto por quantidade' : '';
+                    const priceHTML = temDescItem
+                        ? '<s>' + fmt(semDesc) + '</s>' + fmt(comDesc)
+                        : fmt(comDesc);
+
+                    cartHTML += '<div class="cart-line"><div style="flex:1;min-width:0"><div class="cart-line-name">' + names[item] + '</div><div class="cart-line-detail" id="cart-detail-' + item + '">' + detail + '</div></div><div class="cart-line-right"><div class="cart-qty-ctrl"><button class="cart-qty-btn" onclick="cartChangeQty(\'' + item + '\',-1)">−</button><span class="cart-qty-num">' + qty + (item === 'gold' ? 'kk' : '') + '</span><button class="cart-qty-btn" onclick="cartChangeQty(\'' + item + '\',1)">+</button></div><div class="cart-line-price" id="cart-price-' + item + '">' + priceHTML + '</div></div></div>';
                 } else { subEl.textContent = ''; }
             });
+
             const cartContent = document.getElementById('cartContent');
             const clearBtn = document.getElementById('clearCartBtn');
             document.getElementById('cartCount').textContent = count;
+
             if (count === 0) {
                 cartContent.innerHTML = '<div class="cart-empty">Selecione os itens acima para montar seu pedido</div>';
                 document.getElementById('orderBtn').disabled = true;
@@ -793,24 +797,33 @@
             } else {
                 const DISCOUNT_THRESHOLD = 300;
                 const DISCOUNT_RATE = 0.10;
-                const hasDiscount = total >= DISCOUNT_THRESHOLD;
-                const finalTotal = hasDiscount ? total * (1 - DISCOUNT_RATE) : total;
-                const progress = Math.min((total / DISCOUNT_THRESHOLD) * 100, 100);
+
+                // Desconto carrinho: baseado no total SEM desconto de item
+                const hasCartDiscount = totalSemDesc >= DISCOUNT_THRESHOLD;
+                const cartDiscountVal = totalSemDesc * DISCOUNT_RATE;
+                const totalComCartDesc = totalSemDesc - cartDiscountVal;
+
+                // Usa o melhor desconto: carrinho ou itens individuais
+                const useCartDiscount = hasCartDiscount && totalComCartDesc < totalComDesc;
+                const finalTotal = useCartDiscount ? totalComCartDesc : totalComDesc;
+                const baseTotal = useCartDiscount ? totalSemDesc : totalComDesc;
+
+                const progress = Math.min((totalSemDesc / DISCOUNT_THRESHOLD) * 100, 100);
 
                 let discountHTML = '';
-                if (hasDiscount) {
-                    discountHTML = '<div class="cart-discount-line"><span>🎉 Desconto 10% aplicado!</span><span>- R$ ' + (total * DISCOUNT_RATE).toFixed(2).replace('.', ',') + '</span></div>';
+                if (useCartDiscount) {
+                    discountHTML = '<div class="cart-discount-line"><span>🎉 Desconto 10% no pedido!</span><span>- R$ ' + cartDiscountVal.toFixed(2).replace('.', ',') + '</span></div><div class="discount-info-note">ℹ️ O maior desconto foi aplicado — descontos por quantidade e por pedido não se acumulam.</div>';
                 }
 
                 let progressHTML = '';
-                if (!hasDiscount) {
-                    const faltam = (DISCOUNT_THRESHOLD - total).toFixed(2).replace('.', ',');
-                    progressHTML = '<div class="discount-progress-wrap"><div class="discount-progress-label"><span>🏷️ Faltam R$ ' + faltam + ' para 10% de desconto!</span></div><div class="discount-progress-bar"><div class="discount-progress-fill" style="width:' + progress + '%"></div></div></div>';
+                if (!hasCartDiscount) {
+                    const faltam = (DISCOUNT_THRESHOLD - totalSemDesc).toFixed(2).replace('.', ',');
+                    progressHTML = '<div class="discount-progress-wrap"><div class="discount-progress-label"><span>🏷️ Faltam R$ ' + faltam + ' para 10% de desconto!</span></div><div class="discount-progress-bar"><div class="discount-progress-fill" style="width:' + progress + '%"></div></div><div class="discount-info-note">ℹ️ O maior desconto é aplicado automaticamente — descontos por quantidade e por pedido não se acumulam.</div></div>';
                 }
 
                 cartContent.innerHTML = '<div class="cart-items">' + cartHTML + '</div>'
                     + discountHTML
-                    + '<div class="cart-total"><span>Total</span><div class="cart-total-right">' + (hasDiscount ? '<span class="cart-total-original">R$ ' + total.toFixed(2).replace('.', ',') + '</span>' : '') + '<span class="cart-total-value">R$ ' + finalTotal.toFixed(2).replace('.', ',') + '</span></div></div>'
+                    + '<div class="cart-total"><span>Total</span><div class="cart-total-right">' + (useCartDiscount ? '<span class="cart-total-original">R$ ' + baseTotal.toFixed(2).replace('.', ',') + '</span>' : '') + '<span class="cart-total-value">R$ ' + finalTotal.toFixed(2).replace('.', ',') + '</span></div></div>'
                     + progressHTML;
                 document.getElementById('orderBtn').disabled = false;
                 if (clearBtn) clearBtn.style.display = 'block';
@@ -820,29 +833,37 @@
         function sendOrder() {
             const items = ['pergaminho','leitura','metal','gold','bau'];
             const names = { pergaminho:'Pergaminho de Aprimoramento', leitura:'Leitura de Arumaka', metal:'Metal Mágico+', gold:'Gold', bau:'Baú da Ceifadora' };
+            const p = shopData.prices;
             let msg = 'Olá! Gostaria de fazer um pedido no MT2 Zeta:\n\n';
-            let total = 0;
+            let totalSemDesc = 0, totalComDesc = 0;
+
             items.forEach(item => {
                 const qty = parseInt(document.getElementById('qty-' + item).value) || 0;
                 if (qty > 0) {
-                    const sub = calcPrice(item, qty);
-                    total += sub;
+                    let semDesc = 0;
+                    if (item === 'pergaminho') semDesc = (qty / 200) * p.pergaminho;
+                    else if (item === 'leitura') semDesc = qty * p.leitura;
+                    else if (item === 'metal') semDesc = qty * p.metal;
+                    else if (item === 'gold') semDesc = qty * p.gold;
+                    else if (item === 'bau') semDesc = qty * p.bau;
+                    const comDesc = calcPrice(item, qty);
+                    totalSemDesc += semDesc;
+                    totalComDesc += comDesc;
                     const unit = item === 'gold' ? 'kk' : 'x';
-                    let disc = '';
-                    if (item === 'pergaminho' && qty > 2000) disc = ' (com desconto)';
-                    if (item === 'leitura' && qty >= 50) disc = ' (com desconto)';
-                    if (item === 'metal' && qty >= 10) disc = ' (com desconto)';
-                    msg += '• ' + qty + unit + ' ' + names[item] + disc + ' = R$ ' + sub.toFixed(2).replace('.', ',') + '\n';
+                    const discLabel = comDesc < semDesc ? ' (desconto qtd)' : '';
+                    msg += '• ' + qty + unit + ' ' + names[item] + discLabel + ' = R$ ' + comDesc.toFixed(2).replace('.', ',') + '\n';
                 }
             });
-            msg += '\nSubtotal: R$ ' + total.toFixed(2).replace('.', ',');
-            if (total >= 300) {
-                const desconto = total * 0.10;
-                const finalTotal = total - desconto;
-                msg += '\n🎉 Desconto 10%: - R$ ' + desconto.toFixed(2).replace('.', ',');
+
+            const useCartDiscount = totalSemDesc >= 300 && (totalSemDesc * 0.9) < totalComDesc;
+            const finalTotal = useCartDiscount ? totalSemDesc * 0.9 : totalComDesc;
+
+            msg += '\nSubtotal: R$ ' + (useCartDiscount ? totalSemDesc : totalComDesc).toFixed(2).replace('.', ',');
+            if (useCartDiscount) {
+                msg += '\n🎉 Desconto 10% no pedido: - R$ ' + (totalSemDesc * 0.1).toFixed(2).replace('.', ',');
                 msg += '\nTotal com desconto: R$ ' + finalTotal.toFixed(2).replace('.', ',');
             } else {
-                msg += '\nTotal: R$ ' + total.toFixed(2).replace('.', ',');
+                msg += '\nTotal: R$ ' + finalTotal.toFixed(2).replace('.', ',');
             }
             msg += '\n\nAguardo confirmação!';
             window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank');
