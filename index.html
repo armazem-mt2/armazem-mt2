@@ -204,7 +204,35 @@
         @keyframes bauFloat { 0%,100% { transform: translateY(0) rotate(-1deg); filter: drop-shadow(0 0 20px rgba(251,150,36,0.5)); } 50% { transform: translateY(-10px) rotate(1deg); filter: drop-shadow(0 0 40px rgba(251,150,36,0.9)); } }
         @keyframes pulse-gold { 0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.4); } 50% { box-shadow: 0 0 0 12px rgba(251,191,36,0); } }
         .bau-open-btn { display: inline-block; padding: 14px 32px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000; font-size: 16px; font-weight: 800; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; animation: pulse-gold 2s infinite; margin: 12px 0; letter-spacing: 0.5px; }
-        .rarity-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); }
+        .itens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
+        .itens-empty { text-align: center; color: var(--text-muted); font-size: 15px; padding: 40px; grid-column: 1/-1; line-height: 2; }
+        .item-card-venda { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; transition: all 0.3s; display: flex; flex-direction: column; position: relative; }
+        .item-card-venda:hover { transform: translateY(-4px); border-color: rgba(124,91,245,0.4); box-shadow: 0 8px 24px rgba(124,91,245,0.15); }
+        .item-img-preview { display: none; position: absolute; left: calc(100% + 12px); top: 0; z-index: 100; width: 260px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.8); border: 1px solid rgba(124,91,245,0.3); pointer-events: none; }
+        .item-card-venda:hover .item-img-preview { display: block; }
+        @media (max-width: 768px) { .item-img-preview { display: none !important; } }
+        .item-card-venda:hover { transform: translateY(-4px); border-color: rgba(124,91,245,0.4); box-shadow: 0 8px 24px rgba(124,91,245,0.15); }
+        .item-card-img { width: 100%; aspect-ratio: 1; object-fit: contain; background: rgba(0,0,0,0.3); padding: 12px; cursor: zoom-in; transition: opacity 0.2s; }
+        .item-card-img:hover { opacity: 0.85; }
+        .img-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
+        .img-modal.open { display: flex; }
+        .img-modal img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 12px; box-shadow: 0 0 60px rgba(0,0,0,0.8); }
+        .img-modal-close { position: fixed; top: 20px; right: 24px; font-size: 32px; color: #fff; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; line-height: 1; }
+        .img-modal-close:hover { opacity: 1; }
+        .item-card-img-placeholder { width: 100%; aspect-ratio: 1; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+        .item-card-body { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .item-card-nome { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+        .item-card-vendedor { font-size: 11px; color: var(--text-muted); }
+        .item-card-preco { font-size: 18px; font-weight: 800; color: var(--green); margin-top: auto; }
+        .item-card-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; border-radius: 8px; background: linear-gradient(135deg,#25D366,#128C7E); color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; font-family: 'Outfit',sans-serif; margin: 0 12px 12px; transition: all 0.2s; }
+        .item-card-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,211,102,0.3); }
+        .adm-item-linha { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 8px; }
+        .adm-item-thumb { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; background: rgba(0,0,0,0.3); flex-shrink: 0; }
+        .adm-item-info { flex: 1; min-width: 0; }
+        .adm-item-info strong { font-size: 13px; color: var(--text); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .adm-item-info span { font-size: 11px; color: var(--text-muted); }
+        .adm-item-del { background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.3); color: var(--red); border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: 'Outfit',sans-serif; transition: all 0.2s; flex-shrink: 0; }
+        .adm-item-del:hover { background: rgba(248,113,113,0.3); }
         .rarity-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .rarity-name { font-size: 12px; font-weight: 700; letter-spacing: 1px; flex-shrink: 0; width: 70px; }
         .rarity-item { font-size: 14px; color: var(--text); flex: 1; }
@@ -241,9 +269,16 @@
     <!-- Canvas de confetes -->
     <canvas id="confettiCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;display:none;"></canvas>
 
+    <!-- Modal de imagem -->
+    <div class="img-modal" id="imgModal" onclick="fecharImgModal()">
+        <span class="img-modal-close" onclick="fecharImgModal()">✕</span>
+        <img id="imgModalImg" src="" alt="Item">
+    </div>
+
     <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="switchTab('consumiveis',this)">Consumíveis</button>
+            <button class="tab" onclick="switchTab('itens',this)">⚔️ Itens</button>
             <button class="tab" onclick="switchTab('bau',this)">🎲 Teste sua sorte</button>
             <button class="tab" onclick="switchTab('como-funciona',this)">Como Funciona</button>
             <button class="tab" onclick="switchTab('contato',this)">💬 Contato</button>
@@ -309,6 +344,14 @@
                 </div>
             </div>
         </div>
+        <div class="tab-content" id="tab-itens">
+            <div class="section-title">⚔️ Itens à Venda</div>
+            <div class="section-subtitle">Equipamentos únicos disponíveis. Clique em "Tenho Interesse" para falar direto com o vendedor.</div>
+            <div id="itensGrid" class="itens-grid">
+                <div class="itens-empty">Nenhum item disponível no momento.<br>Volte em breve! 🔄</div>
+            </div>
+        </div>
+
         <div class="tab-content" id="tab-bau">
             <div class="items-grid" style="max-width:340px;margin:0 auto;">
                 <div class="item-card bau-card">
@@ -519,6 +562,7 @@
                     <button class="adm-tab active" onclick="switchAdmTab('estoque',this)">📦 Estoque</button>
                     <button class="adm-tab" onclick="switchAdmTab('precos',this)">💰 Preços</button>
                     <button class="adm-tab" onclick="switchAdmTab('vendas',this)">📊 Vendas</button>
+                    <button class="adm-tab" onclick="switchAdmTab('itens',this)">⚔️ Itens</button>
                     <button class="adm-tab" onclick="switchAdmTab('promo',this)">🎉 Promoção</button>
                 </div>
 
@@ -564,6 +608,31 @@
                     </div>
                     <button class="save-btn" onclick="adminSave()">💾 Salvar Preços</button>
                     <div class="sync-status" id="syncStatusPrecos"></div>
+                </div>
+
+                <!-- ABA ITENS -->
+                <div class="adm-panel" id="adm-itens">
+                    <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
+                        <h3>➕ Cadastrar Novo Item</h3>
+                        <span class="field-label">Nome do item (ex: Espada Venenosa+8):</span>
+                        <input type="text" class="field-input" id="adm-item-nome" placeholder="Ex: Espada Venenosa+8">
+                        <span class="field-label">Link da imagem:</span>
+                        <input type="text" class="field-input" id="adm-item-img" placeholder="https://i.imgur.com/...">
+                        <span class="field-label">Preço (R$):</span>
+                        <input type="number" class="field-input" id="adm-item-preco" step="0.01" min="0" placeholder="Ex: 25.00">
+                        <span class="field-label">Vendedor:</span>
+                        <select class="field-input" id="adm-item-vendedor">
+                            <option value="jhonny">Jhonny</option>
+                            <option value="odeir">Odeir</option>
+                            <option value="juan">Juan</option>
+                        </select>
+                        <button class="save-btn" style="margin-top:12px;" onclick="adicionarItem()">➕ Adicionar Item</button>
+                    </div>
+                    <div class="admin-section">
+                        <h3>📋 Itens Cadastrados</h3>
+                        <div id="adm-itens-lista"></div>
+                    </div>
+                    <div class="sync-status" id="syncStatusItens"></div>
                 </div>
 
                 <!-- ABA PROMOÇÃO -->
@@ -624,7 +693,8 @@
             stock: { pergaminho: 5000, leitura: 200, metal: 50, gold: 500, bau: 10 },
             prices: { pergaminho: 10, pergaminho_desc: 9, leitura: 1.50, leitura_desc: 1.40, metal: 10, metal_desc: 9, gold: 0.40, bau: 15 },
             sales: 0,
-            promo: { active: false, pct: 0, msg: '' }
+            promo: { active: false, pct: 0, msg: '' },
+            itens: []
         };
         let shopData = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
@@ -720,6 +790,7 @@
                 }
             });
             updateCart();
+            renderItens();
         }
 
         let salesAnimTimer = null;
@@ -1120,6 +1191,104 @@
             shopData.sales = (shopData.sales || 0) + 1;
             document.getElementById('adm-sales').value = shopData.sales;
             renderAll();
+            await saveDataOnline();
+        }
+
+        function abrirImgModal(src) {
+            document.getElementById('imgModalImg').src = src;
+            document.getElementById('imgModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function fecharImgModal() {
+            document.getElementById('imgModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharImgModal(); });
+
+        // ===== ITENS =====
+        const VENDEDORES = {
+            jhonny: { nome: 'Jhonny', tel: '5547999006250' },
+            odeir:  { nome: 'Odeir',  tel: '5533984548374' },
+            juan:   { nome: 'Juan',   tel: '5511948253626' }
+        };
+
+        function renderItens() {
+            const grid = document.getElementById('itensGrid');
+            const lista = document.getElementById('adm-itens-lista');
+            const itens = shopData.itens || [];
+
+            // Grid público
+            if (itens.length === 0) {
+                grid.innerHTML = '<div class="itens-empty">Nenhum item disponível no momento.<br>Volte em breve! 🔄</div>';
+            } else {
+                grid.innerHTML = itens.map(item => {
+                    const v = VENDEDORES[item.vendedor] || VENDEDORES.jhonny;
+                    const msg = encodeURIComponent('Olá ' + v.nome + '! Vi o item "' + item.nome + '" no site do Armazém por R$ ' + parseFloat(item.preco).toFixed(2).replace('.', ',') + ' e tenho interesse. Ainda está disponível?' + (item.img ? '\n\n🖼 Ver item: ' + item.img : ''));
+                    const previewHTML = item.img ? '<img class="item-img-preview" src="' + item.img + '" alt="preview">' : '';
+                    const imgHTML = item.img
+                        ? '<img class="item-card-img" src="' + item.img + '" alt="' + item.nome + '" onclick="abrirImgModal(\'' + item.img + '\')" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
+                        + '<div class="item-card-img-placeholder" style="display:none">⚔️</div>'
+                        : '<div class="item-card-img-placeholder">⚔️</div>';
+                    return '<div class="item-card-venda">'
+                        + previewHTML
+                        + imgHTML
+                        + '<div class="item-card-body">'
+                        + '<div class="item-card-nome">' + item.nome + '</div>'
+                        + '<div class="item-card-vendedor">Vendedor: ' + v.nome + '</div>'
+                        + '<div class="item-card-preco">R$ ' + parseFloat(item.preco).toFixed(2).replace('.', ',') + '</div>'
+                        + '</div>'
+                        + '<a class="item-card-btn" href="https://wa.me/' + v.tel + '?text=' + msg + '" target="_blank">'
+                        + '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'
+                        + 'Tenho Interesse'
+                        + '</a>'
+                        + '</div>';
+                }).join('');
+            }
+
+            // Lista no admin
+            if (!lista) return;
+            if (itens.length === 0) {
+                lista.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">Nenhum item cadastrado.</div>';
+            } else {
+                lista.innerHTML = itens.map((item, i) => {
+                    const v = VENDEDORES[item.vendedor] || VENDEDORES.jhonny;
+                    return '<div class="adm-item-linha">'
+                        + (item.img ? '<img class="adm-item-thumb" src="' + item.img + '" onerror="this.src=\'\'"/>' : '<div class="adm-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">⚔️</div>')
+                        + '<div class="adm-item-info"><strong>' + item.nome + '</strong><span>' + v.nome + ' • R$ ' + parseFloat(item.preco).toFixed(2).replace('.', ',') + '</span></div>'
+                        + '<button class="adm-item-del" onclick="removerItem(' + i + ')">🗑 Remover</button>'
+                        + '</div>';
+                }).join('');
+            }
+        }
+
+        async function adicionarItem() {
+            const nome = document.getElementById('adm-item-nome').value.trim();
+            const img = document.getElementById('adm-item-img').value.trim();
+            const preco = parseFloat(document.getElementById('adm-item-preco').value) || 0;
+            const vendedor = document.getElementById('adm-item-vendedor').value;
+            const statusEl = document.getElementById('syncStatusItens');
+
+            if (!nome) { alert('Digite o nome do item!'); return; }
+            if (preco <= 0) { alert('Digite um preço válido!'); return; }
+
+            if (!shopData.itens) shopData.itens = [];
+            shopData.itens.push({ nome, img, preco, vendedor, id: Date.now() });
+
+            document.getElementById('adm-item-nome').value = '';
+            document.getElementById('adm-item-img').value = '';
+            document.getElementById('adm-item-preco').value = '';
+
+            renderItens();
+            await saveDataOnline();
+            statusEl.textContent = '✅ Item adicionado!';
+            statusEl.style.color = 'var(--green)';
+            setTimeout(() => { statusEl.textContent = ''; }, 3000);
+        }
+
+        async function removerItem(index) {
+            if (!confirm('Remover este item?')) return;
+            shopData.itens.splice(index, 1);
+            renderItens();
             await saveDataOnline();
         }
 
