@@ -16,7 +16,6 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -326,9 +325,9 @@
             <h3>✏️ Editar Item</h3>
             <input type="hidden" id="edit-item-index">
             <span class="field-label">Nome do item:</span>
-            <input type="text" class="field-input" id="edit-item-nome">
+            <input type="text" class="field-input" id="edit-item-nome" onkeydown="if(event.key==='Enter')document.getElementById('edit-item-preco').focus()">
             <span class="field-label">Preço (R$):</span>
-            <input type="number" class="field-input" id="edit-item-preco" step="0.01" min="0">
+            <input type="number" class="field-input" id="edit-item-preco" step="0.01" min="0" onkeydown="if(event.key==='Enter')salvarEdicaoItem()">
             <button class="save-btn" style="margin-top:12px;" onclick="salvarEdicaoItem()">💾 Salvar</button>
         </div>
     </div>
@@ -460,170 +459,9 @@
                 </div>
             </div>
         </div>
-        <div class="tab-content" id="tab-contato">
-            <div style="text-align:center;margin-bottom:28px;">
-                <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">📦 Encomendas & Dúvidas</div>
-                <div style="font-size:14px;color:var(--text-muted);line-height:1.6;">Quer algo que não está no site ou o estoque acabou?<br>Fala com a gente direto no WhatsApp!</div>
-            </div>
-            <div class="contact-grid">
-                <!-- Jhonny - galã -->
-                <div class="contact-card">
-                    <div class="contact-avatar" style="background:none;">
-                        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="32" cy="32" r="32" fill="#1f2d1f"/>
-                            <!-- corpo -->
-                            <ellipse cx="32" cy="52" rx="15" ry="11" fill="#34d399"/>
-                            <!-- cabelo estiloso -->
-                            <ellipse cx="32" cy="16" rx="13" ry="7" fill="#1a0a00"/>
-                            <path d="M19 20 Q22 10 32 12 Q42 10 45 20" fill="#1a0a00"/>
-                            <!-- topete -->
-                            <path d="M26 14 Q32 8 38 14" fill="#2d1200" stroke="#1a0a00" stroke-width="1"/>
-                            <!-- cabeça -->
-                            <circle cx="32" cy="28" r="13" fill="#c8956c"/>
-                            <!-- sobrancelhas estilosas -->
-                            <path d="M24 22 Q27 20 30 22" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
-                            <path d="M34 22 Q37 20 40 22" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
-                            <!-- olhos marcantes -->
-                            <ellipse cx="27" cy="26" rx="2.5" ry="2" fill="#1a0a00"/>
-                            <ellipse cx="37" cy="26" rx="2.5" ry="2" fill="#1a0a00"/>
-                            <!-- brilho nos olhos -->
-                            <circle cx="28" cy="25" r="0.7" fill="white"/>
-                            <circle cx="38" cy="25" r="0.7" fill="white"/>
-                            <!-- sorriso charmoso -->
-                            <path d="M26 33 Q32 38 38 33" stroke="#8b4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                            <!-- cavanhaque -->
-                            <path d="M29 37 Q32 40 35 37" stroke="#1a0a00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <div class="contact-name">Jhonny</div>
-                    <div class="contact-role">Vendedor • MT2 Zeta</div>
-                    <a class="contact-btn" href="https://wa.me/5547999006250?text=Ol%C3%A1%21+Vim+pelo+site+do+Armaz%C3%A9m+e+tenho+interesse+em+comprar+alguns+itens.+Pode+me+ajudar%3F" target="_blank">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        Chamar no WhatsApp
-                    </a>
-                </div>
-                <!-- Odeir - gordinho gente boa -->
-                <div class="contact-card">
-                    <div class="contact-avatar" style="background:none;">
-                        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="32" cy="32" r="32" fill="#2d1f5e"/>
-                            <!-- corpo gordinho -->
-                            <ellipse cx="32" cy="52" rx="18" ry="12" fill="#7c5bf5"/>
-                            <!-- cabeça redonda -->
-                            <circle cx="32" cy="28" r="14" fill="#f5c5a3"/>
-                            <!-- cabelo -->
-                            <ellipse cx="32" cy="16" rx="13" ry="6" fill="#4a2c0a"/>
-                            <!-- olhos felizes -->
-                            <path d="M25 27 Q27 25 29 27" stroke="#333" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                            <path d="M35 27 Q37 25 39 27" stroke="#333" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                            <!-- sorriso largo -->
-                            <path d="M25 33 Q32 40 39 33" stroke="#333" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                            <!-- bochechas -->
-                            <circle cx="24" cy="31" r="3" fill="#f09090" opacity="0.5"/>
-                            <circle cx="40" cy="31" r="3" fill="#f09090" opacity="0.5"/>
-                        </svg>
-                    </div>
-                    <div class="contact-name">Odeir</div>
-                    <div class="contact-role">Vendedor • MT2 Zeta</div>
-                    <a class="contact-btn" href="https://wa.me/5533984548374?text=Ol%C3%A1%21+Vim+pelo+site+do+Armaz%C3%A9m+e+tenho+interesse+em+comprar+alguns+itens.+Pode+me+ajudar%3F" target="_blank">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        Chamar no WhatsApp
-                    </a>
-                </div>
-                <!-- Juan - careca -->
-                <div class="contact-card">
-                    <div class="contact-avatar" style="background:none;">
-                        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="32" cy="32" r="32" fill="#1f3a5e"/>
-                            <!-- corpo -->
-                            <ellipse cx="32" cy="52" rx="15" ry="11" fill="#3b82f6"/>
-                            <!-- cabeça careca -->
-                            <circle cx="32" cy="27" r="13" fill="#d4a574"/>
-                            <!-- brilho no topo da careca -->
-                            <ellipse cx="28" cy="18" rx="4" ry="2.5" fill="white" opacity="0.25" transform="rotate(-20 28 18)"/>
-                            <!-- barba -->
-                            <ellipse cx="32" cy="37" rx="9" ry="5" fill="#5a3a1a"/>
-                            <!-- olhos -->
-                            <circle cx="27" cy="27" r="2" fill="#2d1a0a"/>
-                            <circle cx="37" cy="27" r="2" fill="#2d1a0a"/>
-                            <!-- óculos -->
-                            <rect x="23" y="24" width="8" height="6" rx="2" fill="none" stroke="#555" stroke-width="1.2"/>
-                            <rect x="33" y="24" width="8" height="6" rx="2" fill="none" stroke="#555" stroke-width="1.2"/>
-                            <line x1="31" y1="27" x2="33" y2="27" stroke="#555" stroke-width="1.2"/>
-                            <!-- sorriso sutil -->
-                            <path d="M27 33 Q32 37 37 33" stroke="#4a2c0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <div class="contact-name">Juan</div>
-                    <div class="contact-role">Vendedor • MT2 Zeta</div>
-                    <a class="contact-btn" href="https://wa.me/5511948253626?text=Ol%C3%A1%21+Vim+pelo+site+do+Armaz%C3%A9m+e+tenho+interesse+em+comprar+alguns+itens.+Pode+me+ajudar%3F" target="_blank">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        Chamar no WhatsApp
-                    </a>
-                </div>
-            </div>
-            <p style="text-align:center;color:var(--text-muted);font-size:13px;margin-top:24px;">Respondemos o mais rápido possível! ⚡</p>
-        </div>
-        <div class="tab-content" id="tab-servidor">
-            <div class="servidor-hero">
-                <div class="servidor-title">⚔️ MT2 Zeta</div>
-                <div class="servidor-subtitle">Um servidor de Metin2 com drop justo, eventos frequentes e uma comunidade que está crescendo todo dia. Vale a pena conferir!</div>
-                <a class="servidor-btn" href="https://mt2zeta.net/" target="_blank">
-                    🌐 Acessar o Servidor
-                </a>
-            </div>
-            <div class="diferenciais-grid">
-                <div class="diferencial-card">
-                    <div class="diferencial-icon">🎁</div>
-                    <div class="diferencial-title">Drop Alto</div>
-                    <div class="diferencial-desc">Taxa de drop generosa — você realmente encontra itens bons enquanto joga.</div>
-                </div>
-                <div class="diferencial-card">
-                    <div class="diferencial-icon">🎉</div>
-                    <div class="diferencial-title">Eventos Todo Dia</div>
-                    <div class="diferencial-desc">Todo dia tem evento rolando. Não falta motivo pra logar e aproveitar!</div>
-                </div>
-                <div class="diferencial-card">
-                    <div class="diferencial-icon">🌱</div>
-                    <div class="diferencial-title">Servidor Novo</div>
-                    <div class="diferencial-desc">Todo mundo começou junto. Você ainda pode estar entre os primeiros a dominar.</div>
-                </div>
-                <div class="diferencial-card">
-                    <div class="diferencial-icon">👥</div>
-                    <div class="diferencial-title">Comunidade Ativa</div>
-                    <div class="diferencial-desc">Uma galera disposta a ajudar, jogar e crescer junto no servidor.</div>
-                </div>
-            </div>
-
-            <!-- Grupo de Notícias -->
-            <div class="news-group-box">
-                <div class="news-group-icon">📢</div>
-                <div class="news-group-content">
-                    <div class="news-group-title">Grupo de Notícias do Servidor</div>
-                    <div class="news-group-desc">Fique por dentro dos eventos, atualizações e novidades do MT2 Zeta em primeira mão. Entre no grupo de notícias!</div>
-                    <a class="news-group-btn" href="https://chat.whatsapp.com/LJ3F1SmIwn08xGaYTxgftD" target="_blank">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        Entrar no Grupo
-                    </a>
-                </div>
-            </div>
-
-            <div class="servidor-cta">
-                <div class="servidor-cta-text">Já está no servidor e quer evoluir mais rápido?<br>Confira os itens disponíveis no <strong style="color:var(--accent-light)">Armazém</strong> e dê um salto na sua conta! 🚀</div>
-                <button class="servidor-btn" onclick="switchTab('consumiveis', document.querySelectorAll('.tab')[0]); setTimeout(()=>document.querySelector('.items-grid').scrollIntoView({behavior:'smooth',block:'start'}),50);" style="background:linear-gradient(135deg,var(--green),#059669);box-shadow:0 8px 24px rgba(52,211,153,0.3);">
-                    🛒 Ver Consumíveis
-                </button>
-            </div>
-        </div>
-        <div class="tab-content" id="tab-como-funciona">
-            <div class="steps">
-                <div class="step"><div class="step-num">1</div><div class="step-text">Escolha os itens e quantidades desejadas</div></div>
-                <div class="step"><div class="step-num">2</div><div class="step-text">Confira seu carrinho e clique em "Enviar Pedido"</div></div>
-                <div class="step"><div class="step-num">3</div><div class="step-text">Você será direcionado ao WhatsApp com o pedido pronto</div></div>
-                <div class="step"><div class="step-num">4</div><div class="step-text">Você realiza o pagamento via PIX</div></div>
-                <div class="step"><div class="step-num">5</div><div class="step-text">Combinamos a entrega no jogo e pronto!</div></div>
-            </div>
-        </div>
+        
+        
+        
         <div class="cart-section">
             <div class="cart-title">Seu Pedido <span class="cart-badge" id="cartCount">0</span><button class="cart-clear-btn" id="clearCartBtn" onclick="clearCart()">🗑 Limpar</button></div>
             <div id="cartContent"><div class="cart-empty">Selecione os itens acima para montar seu pedido</div></div>
@@ -819,7 +657,7 @@
         }
 
         async function saveDataOnline() {
-            const ids = ['syncStatus','syncStatusPrecos','syncStatusVendas'];
+            const ids = ['syncStatus','syncStatusPrecos','syncStatusItens','syncStatusPromo'];
             ids.forEach(id => { const el = document.getElementById(id); if(el){ el.className='sync-status'; el.textContent='⏳ Salvando...'; } });
             try {
                 const res = await fetch(API_URL, {
@@ -1296,6 +1134,7 @@
             document.getElementById('edit-item-preco').value = item.preco;
             document.getElementById('editItemModal').classList.add('open');
             document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('edit-item-nome').focus(), 100);
         }
         function fecharEditModal() {
             document.getElementById('editItemModal').classList.remove('open');
