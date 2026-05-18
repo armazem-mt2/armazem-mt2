@@ -133,7 +133,7 @@
         .step-text { color: var(--text-muted); font-size: 15px; }
         .footer { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; padding: 30px 20px; margin-top: 20px; }
         .fbadge { color: var(--text-muted); font-size: 13px; padding: 10px 18px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; }
-        .admin-btn { position: fixed; bottom: 10px; right: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 400; font-size: 11px; z-index: 100; font-family: 'Outfit', sans-serif; transition: all 0.3s; }
+        .admin-btn { position: fixed; bottom: 58px; right: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 400; font-size: 11px; z-index: 910; font-family: 'Outfit', sans-serif; transition: all 0.3s; }
         .admin-btn:hover { background: rgba(124,91,245,0.2); color: var(--accent-light); border-color: rgba(124,91,245,0.4); }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; overflow-y: auto; }
         .modal-box { background: var(--bg-card); max-width: 550px; margin: 40px auto; padding: 36px; border-radius: 16px; border: 1px solid rgba(124,91,245,0.3); }
@@ -233,6 +233,26 @@
         .adm-item-info span { font-size: 11px; color: var(--text-muted); }
         .adm-item-del { background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.3); color: var(--red); border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: 'Outfit',sans-serif; transition: all 0.2s; flex-shrink: 0; }
         .adm-item-del:hover { background: rgba(248,113,113,0.3); }
+
+        .tab-sorte { background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(245,158,11,0.1)) !important; border-color: rgba(251,191,36,0.4) !important; color: var(--gold) !important; font-weight: 700 !important; animation: sortePulse 2.5s ease-in-out infinite; }
+        .tab-sorte.active, .tab-sorte:hover { background: linear-gradient(135deg, rgba(251,191,36,0.35), rgba(245,158,11,0.25)) !important; }
+        @keyframes sortePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); } 50% { box-shadow: 0 0 12px 3px rgba(251,191,36,0.25); } }
+        .fixed-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(13,12,20,0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--border); z-index: 900; padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .fixed-footer-label { font-size: 12px; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+        .fixed-footer-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 20px; background: linear-gradient(135deg,#25D366,#128C7E); color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; font-family: 'Outfit',sans-serif; transition: all 0.2s; white-space: nowrap; }
+        .fixed-footer-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,211,102,0.3); }
+        .fixed-footer-como { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 20px; background: rgba(124,91,245,0.15); border: 1px solid rgba(124,91,245,0.3); color: var(--accent-light); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Outfit',sans-serif; transition: all 0.2s; white-space: nowrap; }
+        .fixed-footer-como:hover { background: rgba(124,91,245,0.25); }
+        .container { padding-bottom: 70px; }
+        .como-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9990; align-items: center; justify-content: center; padding: 16px; }
+        .como-modal.open { display: flex; }
+        .como-modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; }
+        .como-modal-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 20px; }
+        .como-modal-close { position: absolute; top: 16px; right: 20px; font-size: 22px; color: var(--text-muted); cursor: pointer; background: none; border: none; font-family: 'Outfit',sans-serif; }
+        .como-step { display: flex; gap: 14px; margin-bottom: 18px; align-items: flex-start; }
+        .como-step-num { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),var(--accent-light)); color: #fff; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .como-step-text strong { display: block; font-size: 14px; color: var(--text); margin-bottom: 3px; }
+        .como-step-text span { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
         .rarity-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .rarity-name { font-size: 12px; font-weight: 700; letter-spacing: 1px; flex-shrink: 0; width: 70px; }
         .rarity-item { font-size: 14px; color: var(--text); flex: 1; }
@@ -275,14 +295,42 @@
         <img id="imgModalImg" src="" alt="Item">
     </div>
 
+    <!-- Modal Como Funciona -->
+    <div class="como-modal" id="comoModal" onclick="if(event.target===this)fecharComoModal()">
+        <div class="como-modal-box">
+            <button class="como-modal-close" onclick="fecharComoModal()">✕</button>
+            <div class="como-modal-title">❓ Como Funciona</div>
+            <div class="como-step"><div class="como-step-num">1</div><div class="como-step-text"><strong>Escolha seus itens</strong><span>Na aba Consumíveis ou Itens, selecione o que deseja comprar e a quantidade.</span></div></div>
+            <div class="como-step"><div class="como-step-num">2</div><div class="como-step-text"><strong>Monte seu pedido</strong><span>Os itens vão para o carrinho automaticamente com o valor total calculado.</span></div></div>
+            <div class="como-step"><div class="como-step-num">3</div><div class="como-step-text"><strong>Envie pelo WhatsApp</strong><span>Clique em "Enviar Pedido" — a mensagem com tudo já preenchida vai direto para o vendedor.</span></div></div>
+            <div class="como-step"><div class="como-step-num">4</div><div class="como-step-text"><strong>Pague via PIX</strong><span>Após confirmar o pedido, combinamos o pagamento por PIX. Rápido e seguro.</span></div></div>
+            <div class="como-step"><div class="como-step-num">5</div><div class="como-step-text"><strong>Receba no jogo</strong><span>Após confirmação do pagamento, entregamos os itens direto no servidor. Entrega rápida! ⚡</span></div></div>
+        </div>
+    </div>
+
+    <!-- Rodapé fixo -->
+    <div class="fixed-footer">
+        <span class="fixed-footer-label">💬 Fale com a gente:</span>
+        <a class="fixed-footer-btn" href="https://wa.me/5547999006250?text=Ol%C3%A1%21+Vim+pelo+site+do+Armaz%C3%A9m+e+tenho+interesse+em+comprar+alguns+itens.+Pode+me+ajudar%3F" target="_blank">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Jhonny
+        </a>
+        <a class="fixed-footer-btn" href="https://wa.me/5533984548374?text=Ol%C3%A1%21+Vim+pelo+site+do+Armaz%C3%A9m+e+tenho+interesse+em+comprar+alguns+itens.+Pode+me+ajudar%3F" target="_blank">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Odeir
+        </a>
+        <a class="fixed-footer-btn" href="https://wa.me/5511948253626?text=Ol%C3%A1%21+Vim+pelo+site+do+Armaz%C3%A9m+e+tenho+interesse+em+comprar+alguns+itens.+Pode+me+ajudar%3F" target="_blank">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Juan
+        </a>
+        <button class="fixed-footer-como" onclick="abrirComoModal()">❓ Como Funciona</button>
+    </div>
+
     <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="switchTab('consumiveis',this)">Consumíveis</button>
             <button class="tab" onclick="switchTab('itens',this)">⚔️ Itens</button>
-            <button class="tab" onclick="switchTab('bau',this)">🎲 Teste sua sorte</button>
-            <button class="tab" onclick="switchTab('como-funciona',this)">Como Funciona</button>
-            <button class="tab" onclick="switchTab('contato',this)">💬 Contato</button>
-            <button class="tab" onclick="switchTab('servidor',this)">⚔️ O Servidor</button>
+            <button class="tab tab-sorte" onclick="switchTab('bau',this)">🎲 Teste sua Sorte</button>
         </div>
         <div class="tab-content active" id="tab-consumiveis">
             <div class="items-grid">
@@ -558,18 +606,22 @@
             <input type="password" class="field-input" id="adminPass" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')adminLogin()">
             <button class="save-btn" id="loginBtn" onclick="adminLogin()">🔓 Entrar</button>
             <div id="adminPanel" style="display:none;">
+                <!-- Contador de vendas rápido -->
+                <div style="display:flex;align-items:center;gap:10px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:12px;padding:12px 16px;margin-bottom:12px;">
+                    <span style="font-size:13px;color:var(--text-muted);flex:1;">🏆 Vendas realizadas:</span>
+                    <span id="adm-sales-display" style="font-size:18px;font-weight:800;color:var(--green);">0</span>
+                    <button onclick="quickSale()" style="padding:6px 14px;background:linear-gradient(135deg,var(--green),#059669);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">+1 Venda</button>
+                </div>
                 <div class="adm-tabs">
-                    <button class="adm-tab active" onclick="switchAdmTab('estoque',this)">📦 Estoque</button>
-                    <button class="adm-tab" onclick="switchAdmTab('precos',this)">💰 Preços</button>
-                    <button class="adm-tab" onclick="switchAdmTab('vendas',this)">📊 Vendas</button>
+                    <button class="adm-tab active" onclick="switchAdmTab('estoque',this)">📦 Estoque & Preços</button>
                     <button class="adm-tab" onclick="switchAdmTab('itens',this)">⚔️ Itens</button>
                     <button class="adm-tab" onclick="switchAdmTab('promo',this)">🎉 Promoção</button>
                 </div>
 
-                <!-- ABA ESTOQUE -->
+                <!-- ABA ESTOQUE + PREÇOS -->
                 <div class="adm-panel active" id="adm-estoque">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <h3>Atualizar Estoque</h3>
+                        <h3>📦 Atualizar Estoque</h3>
                         <span class="field-label">Pergaminho de Aprimoramento:</span>
                         <input type="number" class="field-input" id="adm-stock-pergaminho" step="200">
                         <span class="field-label">Leitura de Arumaka:</span>
@@ -581,14 +633,9 @@
                         <span class="field-label">Baú da Ceifadora:</span>
                         <input type="number" class="field-input" id="adm-stock-bau">
                     </div>
-                    <button class="save-btn" onclick="adminSave()">💾 Salvar Estoque</button>
-                    <div class="sync-status" id="syncStatus"></div>
-                </div>
-
-                <!-- ABA PREÇOS -->
-                <div class="adm-panel" id="adm-precos">
+                    <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <h3>Alterar Preços</h3>
+                        <h3>💰 Alterar Preços</h3>
                         <span class="field-label">Pergaminho (a cada 200):</span>
                         <input type="number" class="field-input" id="adm-price-pergaminho" step="0.50">
                         <span class="field-label">Pergaminho desconto (2000+, a cada 200):</span>
@@ -606,7 +653,8 @@
                         <span class="field-label">Baú da Ceifadora:</span>
                         <input type="number" class="field-input" id="adm-price-bau" step="1">
                     </div>
-                    <button class="save-btn" onclick="adminSave()">💾 Salvar Preços</button>
+                    <button class="save-btn" onclick="adminSave()">💾 Salvar Tudo</button>
+                    <div class="sync-status" id="syncStatus"></div>
                     <div class="sync-status" id="syncStatusPrecos"></div>
                 </div>
 
@@ -666,17 +714,8 @@
                     <div class="sync-status" id="syncStatusPromo"></div>
                 </div>
 
-                <!-- ABA VENDAS -->
-                <div class="adm-panel" id="adm-vendas">
-                    <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <h3>Vendas Realizadas</h3>
-                        <span class="field-label">Total de vendas:</span>
-                        <input type="number" class="field-input" id="adm-sales">
-                        <button class="save-btn" style="background:linear-gradient(135deg,#25D366,#128C7E);margin-top:10px;" onclick="quickSale()">✅ +1 Venda Realizada</button>
-                    </div>
-                    <button class="save-btn" onclick="adminSave()">💾 Salvar Vendas</button>
-                    <div class="sync-status" id="syncStatusVendas"></div>
-                </div>
+                <!-- input oculto para manter compatibilidade com adminSave -->
+                <input type="hidden" id="adm-sales">
             </div>
         </div>
     </div>
@@ -754,6 +793,8 @@
             document.getElementById('stock-gold').textContent = fmtGold(shopData.stock.gold);
             document.getElementById('stock-bau').textContent = shopData.stock.bau;
             animateSalesCount(shopData.sales);
+            const admSalesDisplay = document.getElementById('adm-sales-display');
+            if (admSalesDisplay) admSalesDisplay.textContent = shopData.sales;
             showPromoBanner();
             updatePromoAdmStatus();
 
@@ -1193,6 +1234,9 @@
             renderAll();
             await saveDataOnline();
         }
+
+        function abrirComoModal() { document.getElementById('comoModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function fecharComoModal() { document.getElementById('comoModal').classList.remove('open'); document.body.style.overflow = ''; }
 
         function abrirImgModal(src) {
             document.getElementById('imgModalImg').src = src;
