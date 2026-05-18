@@ -208,8 +208,9 @@
         .itens-empty { text-align: center; color: var(--text-muted); font-size: 15px; padding: 40px; grid-column: 1/-1; line-height: 2; }
         .item-card-venda { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; transition: all 0.3s; display: flex; flex-direction: column; position: relative; z-index: 1; }
         .item-card-venda:hover { transform: translateY(-4px); border-color: rgba(124,91,245,0.4); box-shadow: 0 8px 24px rgba(124,91,245,0.15); z-index: 100; }
-        .item-img-preview { display: none; position: absolute; left: calc(100% + 12px); top: 0; z-index: 101; width: 260px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.8); border: 1px solid rgba(124,91,245,0.3); pointer-events: none; }
-        .item-card-venda:hover .item-img-preview { display: block; }
+        .item-card-img-wrap { position: relative; overflow: visible; }
+        .item-img-preview { display: none; position: absolute; top: 0; left: 0; width: 100%; z-index: 101; border-radius: 8px 8px 0 0; box-shadow: 0 8px 32px rgba(0,0,0,0.9); border: 1px solid rgba(124,91,245,0.4); pointer-events: none; }
+        .item-card-img-wrap:hover .item-img-preview { display: block; }
         @media (max-width: 768px) { .item-img-preview { display: none !important; } }
         .item-card-img { width: 100%; aspect-ratio: 1; object-fit: contain; background: rgba(0,0,0,0.3); padding: 12px; cursor: zoom-in; transition: opacity 0.2s; }
         .item-card-img:hover { opacity: 0.85; }
@@ -234,8 +235,11 @@
         .adm-item-del:hover { background: rgba(248,113,113,0.3); }
         .adm-item-edit { background: rgba(124,91,245,0.15); border: 1px solid rgba(124,91,245,0.3); color: var(--accent-light); border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: 'Outfit',sans-serif; transition: all 0.2s; flex-shrink: 0; }
         .adm-item-edit:hover { background: rgba(124,91,245,0.3); }
+        .adm-btn-wrap { position: relative; display: inline-block; }
+        .adm-btn-wrap .adm-tooltip { display: none; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: rgba(20,18,30,0.97); border: 1px solid var(--border); color: var(--text); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 300; font-family: 'Outfit',sans-serif; }
+        .adm-btn-wrap:hover .adm-tooltip { display: block; }
         .adm-item-linha { position: relative; }
-        .adm-item-hover-preview { display: none; position: absolute; right: calc(100% + 10px); top: 0; z-index: 200; width: 200px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.8); border: 1px solid rgba(124,91,245,0.3); pointer-events: none; }
+        .adm-item-hover-preview { display: none; position: absolute; right: calc(100% + 8px); top: 50%; transform: translateY(-50%); z-index: 200; width: 260px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.8); border: 1px solid rgba(124,91,245,0.3); pointer-events: none; }
         .adm-item-linha:hover .adm-item-hover-preview { display: block; }
         .pag-btn { padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text-muted); font-size: 12px; cursor: pointer; font-family: 'Outfit',sans-serif; transition: all 0.2s; }
         .pag-btn:hover, .pag-btn.active { background: rgba(124,91,245,0.2); border-color: var(--accent); color: var(--accent-light); }
@@ -1354,8 +1358,7 @@
                     const msg = encodeURIComponent('Olá ' + v.nome + '! Vi o item "' + item.nome + '" no site do Armazém por R$ ' + parseFloat(item.preco).toFixed(2).replace('.', ',') + ' e tenho interesse. Ainda está disponível?' + (item.img ? '\n\n🖼 Ver item: ' + item.img : ''));
                     const previewHTML = item.img ? '<img class="item-img-preview" src="' + item.img + '" alt="preview">' : '';
                     const imgHTML = item.img
-                        ? '<img class="item-card-img" src="' + item.img + '" alt="' + item.nome + '" onclick="abrirImgModal(\'' + item.img + '\')" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
-                        + '<div class="item-card-img-placeholder" style="display:none">⚔️</div>'
+                        ? '<div class="item-card-img-wrap">' + previewHTML + '<img class="item-card-img" src="' + item.img + '" alt="' + item.nome + '" onclick="abrirImgModal(\'' + item.img + '\')" onerror="this.style.display=\'none\'"></div>'
                         : '<div class="item-card-img-placeholder">⚔️</div>';
                     return '<div class="item-card-venda">'
                         + previewHTML + imgHTML
@@ -1394,8 +1397,8 @@
                         + hoverImg
                         + (item.img ? '<img class="adm-item-thumb" src="' + item.img + '" onerror="this.src=\'\'"/>' : '<div class="adm-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">⚔️</div>')
                         + '<div class="adm-item-info"><strong>' + item.nome + '</strong><span>' + v.nome + ' • R$ ' + parseFloat(item.preco).toFixed(2).replace('.', ',') + '</span></div>'
-                        + '<button class="adm-item-edit" onclick="abrirEditModal(' + i + ')">✏️ Editar</button>'
-                        + '<button class="adm-item-del" onclick="removerItem(' + i + ')">🗑</button>'
+                        + '<div class="adm-btn-wrap"><span class="adm-tooltip">Editar nome e preço</span><button class="adm-item-edit" onclick="abrirEditModal(' + i + ')">✏️ Editar</button></div>'
+                        + '<div class="adm-btn-wrap"><span class="adm-tooltip">Remover item</span><button class="adm-item-del" onclick="removerItem(' + i + ')">🗑</button></div>'
                         + '</div>';
                 }).join('');
             }
