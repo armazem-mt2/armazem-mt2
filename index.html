@@ -244,6 +244,16 @@
         .fixed-footer-como { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 20px; background: rgba(124,91,245,0.15); border: 1px solid rgba(124,91,245,0.3); color: var(--accent-light); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Outfit',sans-serif; transition: all 0.2s; white-space: nowrap; }
         .fixed-footer-como:hover { background: rgba(124,91,245,0.25); }
         .container { padding-bottom: 70px; }
+        .collapsible-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 10px 0; user-select: none; }
+        .collapsible-header h3 { margin: 0; }
+        .collapsible-arrow { font-size: 12px; color: var(--text-muted); transition: transform 0.3s; }
+        .collapsible-arrow.open { transform: rotate(180deg); }
+        .collapsible-body { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+        .collapsible-body.open { max-height: 1000px; }
+        .imgur-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; margin-bottom: 8px; }
+        .imgur-hint a { color: var(--accent-light); text-decoration: none; }
+        .imgur-hint a:hover { text-decoration: underline; }
+        @media (max-width: 600px) { .fixed-footer { gap: 6px; padding: 8px 10px; } .fixed-footer-label { display: none; } .fixed-footer-btn { padding: 6px 10px; font-size: 11px; gap: 4px; } .fixed-footer-como { display: none; } }
         .como-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9990; align-items: center; justify-content: center; padding: 16px; }
         .como-modal.open { display: flex; }
         .como-modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; }
@@ -607,7 +617,7 @@
             <button class="save-btn" id="loginBtn" onclick="adminLogin()">🔓 Entrar</button>
             <div id="adminPanel" style="display:none;">
                 <!-- Contador de vendas rápido -->
-                <div style="display:flex;align-items:center;gap:10px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:12px;padding:12px 16px;margin-bottom:12px;">
+                <div style="display:flex;align-items:center;gap:10px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:12px;padding:12px 16px;margin-top:12px;margin-bottom:12px;">
                     <span style="font-size:13px;color:var(--text-muted);flex:1;">🏆 Vendas realizadas:</span>
                     <span id="adm-sales-display" style="font-size:18px;font-weight:800;color:var(--green);">0</span>
                     <button onclick="quickSale()" style="padding:6px 14px;background:linear-gradient(135deg,var(--green),#059669);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">+1 Venda</button>
@@ -635,7 +645,11 @@
                     </div>
                     <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <h3>💰 Alterar Preços</h3>
+                        <div class="collapsible-header" onclick="togglePrecosCollapse()">
+                            <h3>💰 Alterar Preços</h3>
+                            <span class="collapsible-arrow" id="precosArrow">▼</span>
+                        </div>
+                        <div class="collapsible-body" id="precosBody">
                         <span class="field-label">Pergaminho (a cada 200):</span>
                         <input type="number" class="field-input" id="adm-price-pergaminho" step="0.50">
                         <span class="field-label">Pergaminho desconto (2000+, a cada 200):</span>
@@ -652,6 +666,7 @@
                         <input type="number" class="field-input" id="adm-price-gold" step="0.10">
                         <span class="field-label">Baú da Ceifadora:</span>
                         <input type="number" class="field-input" id="adm-price-bau" step="1">
+                        </div>
                     </div>
                     <button class="save-btn" onclick="adminSave()">💾 Salvar Tudo</button>
                     <div class="sync-status" id="syncStatus"></div>
@@ -666,6 +681,7 @@
                         <input type="text" class="field-input" id="adm-item-nome" placeholder="Ex: Espada Venenosa+8">
                         <span class="field-label">Link da imagem:</span>
                         <input type="text" class="field-input" id="adm-item-img" placeholder="https://i.imgur.com/...">
+                        <div class="imgur-hint">📎 Não tem link? <a href="https://imgur.com/upload" target="_blank">Clique aqui para hospedar sua imagem no Imgur</a></div>
                         <span class="field-label">Preço (R$):</span>
                         <input type="number" class="field-input" id="adm-item-preco" step="0.01" min="0" placeholder="Ex: 25.00">
                         <span class="field-label">Vendedor:</span>
@@ -1044,8 +1060,8 @@
         function calcPrice(item, qty) {
             const p = shopData.prices;
             if (item === 'pergaminho') { const sets = qty / 200; return sets * (qty > 2000 ? p.pergaminho_desc : p.pergaminho); }
-            if (item === 'leitura') return qty * (qty >= 50 ? p.leitura_desc : p.leitura);
-            if (item === 'metal') return qty * (qty >= 10 ? p.metal_desc : p.metal);
+            if (item === 'leitura') return qty * (qty > 50 ? p.leitura_desc : p.leitura);
+            if (item === 'metal') return qty * (qty > 10 ? p.metal_desc : p.metal);
             if (item === 'gold') return qty * p.gold;
             if (item === 'bau') return qty * p.bau;
             return 0;
@@ -1237,6 +1253,12 @@
 
         function abrirComoModal() { document.getElementById('comoModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
         function fecharComoModal() { document.getElementById('comoModal').classList.remove('open'); document.body.style.overflow = ''; }
+        function togglePrecosCollapse() {
+            const body = document.getElementById('precosBody');
+            const arrow = document.getElementById('precosArrow');
+            body.classList.toggle('open');
+            arrow.classList.toggle('open');
+        }
 
         function abrirImgModal(src) {
             document.getElementById('imgModalImg').src = src;
