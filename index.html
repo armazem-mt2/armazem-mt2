@@ -657,7 +657,17 @@
                 const res = await fetch(WORKER_URL + '/data');
                 if (res.ok) {
                     const json = await res.json();
-                    shopData = json.record;
+                    const loaded = json.record;
+                    // Merge com DEFAULT_DATA para garantir campos novos
+                    shopData = {
+                        ...JSON.parse(JSON.stringify(DEFAULT_DATA)),
+                        ...loaded,
+                        stock: { ...DEFAULT_DATA.stock, ...(loaded.stock || {}) },
+                        prices: { ...DEFAULT_DATA.prices, ...(loaded.prices || {}) },
+                        promo: { ...DEFAULT_DATA.promo, ...(loaded.promo || {}) },
+                        itens: loaded.itens || [],
+                        consumiveis: loaded.consumiveis || []
+                    };
                     showLoading(100);
                     setTimeout(() => showLoading(0), 500);
                 } else {
