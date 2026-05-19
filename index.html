@@ -430,8 +430,16 @@
                     <div class="item-subtotal" id="sub-gold"></div>
                 </div>
             </div>
+            <!-- Consumíveis extras cadastrados pelo admin -->
+            <div id="extra-consumiveis-grid" class="items-grid"></div>
         </div>
         <div class="tab-content" id="tab-itens">
+            <div class="section-title">⚔️ Itens à Venda</div>
+            <div class="section-subtitle">Equipamentos únicos disponíveis. Clique em "Tenho Interesse" para falar direto com o vendedor.</div>
+            <div id="itensGrid" class="itens-grid">
+                <div class="itens-empty">Nenhum item disponível no momento.<br>Volte em breve! 🔄</div>
+            </div>
+        </div>
             <div class="section-title">⚔️ Itens à Venda</div>
             <div class="section-subtitle">Equipamentos únicos disponíveis. Clique em "Tenho Interesse" para falar direto com o vendedor.</div>
             <div id="itensGrid" class="itens-grid">
@@ -460,8 +468,6 @@
                     <div class="item-subtotal" id="sub-bau"></div>
                 </div>
             </div>
-            <!-- Consumíveis extras cadastrados pelo admin -->
-            <div id="extra-consumiveis-grid" class="items-grid"></div>
         </div>
         
         
@@ -549,8 +555,6 @@
                         <div class="imgur-hint">📎 Não tem link? <a href="https://imgur.com/upload" target="_blank">Clique aqui para hospedar sua imagem no Imgur</a></div>
                         <span class="field-label">Preço (R$):</span>
                         <input type="number" class="field-input" id="adm-extra-preco" step="0.10" min="0" placeholder="Ex: 2.50">
-                        <span class="field-label">Unidade:</span>
-                        <input type="text" class="field-input" id="adm-extra-unidade" placeholder="Ex: cada, a cada 10">
                         <span class="field-label">Estoque inicial:</span>
                         <input type="number" class="field-input" id="adm-extra-stock" min="0" placeholder="Ex: 100">
                         <button class="save-btn" style="margin-top:12px;" onclick="adicionarConsumivel()">➕ Adicionar</button>
@@ -1307,12 +1311,12 @@
                 grid.innerHTML = extras.map((c, i) => {
                     const esgotado = c.stock <= 0;
                     const imgHTML = c.img
-                        ? `<img src="${c.img}" alt="${c.nome}" style="width:100%;aspect-ratio:1;object-fit:contain;background:rgba(0,0,0,0.3);padding:12px;cursor:zoom-in;" onclick="abrirImgModal('${c.img}')" onerror="this.style.display='none'">`
+                        ? `<img src="${c.img}" alt="${c.nome}" style="width:100%;aspect-ratio:1;object-fit:cover;background:rgba(0,0,0,0.3);cursor:zoom-in;" onclick="abrirImgModal('${c.img}')" onerror="this.style.display='none'">`
                         : `<div style="font-size:48px;text-align:center;padding:20px;">📦</div>`;
                     return `<div class="item-card${esgotado ? ' esgotado' : ''}">
                         ${imgHTML}
                         <div class="item-name">${c.nome}</div>
-                        <div class="item-price" id="extra-price-${i}">R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} ${c.unidade}</div>
+                        <div class="item-price">R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} cada</div>
                         <div class="item-stock">Estoque: <strong id="extra-stock-${i}" class="${esgotado ? 'out' : ''}">${c.stock}</strong></div>
                         ${esgotado ? '<div class="esgotado-badge">🚫 Esgotado</div>' : ''}
                         <div class="qty-row">
