@@ -440,13 +440,6 @@
                 <div class="itens-empty">Nenhum item disponível no momento.<br>Volte em breve! 🔄</div>
             </div>
         </div>
-            <div class="section-title">⚔️ Itens à Venda</div>
-            <div class="section-subtitle">Equipamentos únicos disponíveis. Clique em "Tenho Interesse" para falar direto com o vendedor.</div>
-            <div id="itensGrid" class="itens-grid">
-                <div class="itens-empty">Nenhum item disponível no momento.<br>Volte em breve! 🔄</div>
-            </div>
-        </div>
-
         <div class="tab-content" id="tab-bau">
             <div class="items-grid" style="max-width:340px;margin:0 auto;">
                 <div class="item-card bau-card">
@@ -1311,8 +1304,8 @@
                 grid.innerHTML = extras.map((c, i) => {
                     const esgotado = c.stock <= 0;
                     const imgHTML = c.img
-                        ? `<img src="${c.img}" alt="${c.nome}" style="width:100%;aspect-ratio:1;object-fit:cover;background:rgba(0,0,0,0.3);cursor:zoom-in;" onclick="abrirImgModal('${c.img}')" onerror="this.style.display='none'">`
-                        : `<div style="font-size:48px;text-align:center;padding:20px;">📦</div>`;
+                        ? `<img class="item-card-img" src="${c.img}" alt="${c.nome}" style="cursor:zoom-in;" onclick="abrirImgModal('${c.img}')" onerror="this.style.display='none'">`
+                        : `<div class="item-card-img-placeholder">📦</div>`;
                     return `<div class="item-card${esgotado ? ' esgotado' : ''}">
                         ${imgHTML}
                         <div class="item-name">${c.nome}</div>
