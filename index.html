@@ -494,7 +494,7 @@
                 </div>
                 <div class="adm-tabs">
                     <button class="adm-tab active" onclick="switchAdmTab('estoque',this)">📦 Estoque</button>
-                    <button class="adm-tab" onclick="switchAdmTab('precos',this)">💰 Preços</button>
+                    <button class="adm-tab" onclick="switchAdmTab('consumiveis',this)">🧪 Consumíveis</button>
                     <button class="adm-tab" onclick="switchAdmTab('itens',this)">⚔️ Itens</button>
                     <button class="adm-tab" onclick="switchAdmTab('promo',this)">🎉 Promoção</button>
                 </div>
@@ -514,12 +514,7 @@
                         <span class="field-label">Baú da Ceifadora:</span>
                         <input type="number" class="field-input" id="adm-stock-bau">
                     </div>
-                    <button class="save-btn" onclick="adminSave()">💾 Salvar Estoque</button>
-                    <div class="sync-status" id="syncStatus"></div>
-                </div>
-
-                <!-- ABA PREÇOS & CONSUMÍVEIS -->
-                <div class="adm-panel" id="adm-precos">
+                    <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
                         <div class="collapsible-header" onclick="togglePrecosCollapse()">
                             <h3>💰 Alterar Preços</h3>
@@ -538,10 +533,13 @@
                         <input type="number" class="field-input" id="adm-price-bau" step="1">
                         </div>
                     </div>
-                    <button class="save-btn" onclick="adminSave()">💾 Salvar Preços</button>
+                    <button class="save-btn" onclick="adminSave()">💾 Salvar</button>
+                    <div class="sync-status" id="syncStatus"></div>
                     <div class="sync-status" id="syncStatusPrecos"></div>
+                </div>
 
-                    <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
+                <!-- ABA CONSUMÍVEIS -->
+                <div class="adm-panel" id="adm-consumiveis">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
                         <h3>🧪 Cadastrar Consumível</h3>
                         <span class="field-label">Nome:</span>
@@ -677,6 +675,9 @@
         async function saveDataOnline() {
             const ids = ['syncStatus','syncStatusPrecos','syncStatusItens','syncStatusPromo'];
             ids.forEach(id => { const el = document.getElementById(id); if(el){ el.className='sync-status'; el.textContent='⏳ Salvando...'; } });
+            // Proteção: nunca salvar itens ou consumiveis vazios por acidente
+            if (!shopData.itens) shopData.itens = [];
+            if (!shopData.consumiveis) shopData.consumiveis = [];
             try {
                 const res = await fetch(WORKER_URL + '/data', {
                     method: 'PUT',
