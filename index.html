@@ -63,8 +63,8 @@
         .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .items-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-        .item-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; text-align: center; transition: all 0.35s ease; position: relative; }
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 260px)); gap: 24px; justify-content: center; }
+        .item-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; text-align: center; transition: all 0.35s ease; position: relative; width: 100%; }
         .item-card:hover { background: var(--bg-card-hover); border-color: rgba(124,91,245,0.3); transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
         .item-image { width: 90px; height: 90px; margin: 0 auto 16px; image-rendering: auto; filter: drop-shadow(0 2px 8px var(--accent-glow)); }
         .item-name { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
