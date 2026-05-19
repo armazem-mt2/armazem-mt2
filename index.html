@@ -493,12 +493,13 @@
                     <button onclick="quickSale()" style="padding:6px 14px;background:linear-gradient(135deg,var(--green),#059669);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">+1 Venda</button>
                 </div>
                 <div class="adm-tabs">
-                    <button class="adm-tab active" onclick="switchAdmTab('estoque',this)">📦 Estoque & Preços</button>
+                    <button class="adm-tab active" onclick="switchAdmTab('estoque',this)">📦 Estoque</button>
+                    <button class="adm-tab" onclick="switchAdmTab('precos',this)">💰 Preços</button>
                     <button class="adm-tab" onclick="switchAdmTab('itens',this)">⚔️ Itens</button>
                     <button class="adm-tab" onclick="switchAdmTab('promo',this)">🎉 Promoção</button>
                 </div>
 
-                <!-- ABA ESTOQUE + PREÇOS -->
+                <!-- ABA ESTOQUE -->
                 <div class="adm-panel active" id="adm-estoque">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
                         <h3>📦 Atualizar Estoque</h3>
@@ -513,13 +514,14 @@
                         <span class="field-label">Baú da Ceifadora:</span>
                         <input type="number" class="field-input" id="adm-stock-bau">
                     </div>
-                    <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
+                    <button class="save-btn" onclick="adminSave()">💾 Salvar Estoque</button>
+                    <div class="sync-status" id="syncStatus"></div>
+                </div>
+
+                <!-- ABA PREÇOS & CONSUMÍVEIS -->
+                <div class="adm-panel" id="adm-precos">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <div class="collapsible-header" onclick="togglePrecosCollapse()">
-                            <h3>💰 Alterar Preços</h3>
-                            <span class="collapsible-arrow" id="precosArrow">▼</span>
-                        </div>
-                        <div class="collapsible-body" id="precosBody">
+                        <h3>💰 Alterar Preços</h3>
                         <span class="field-label">Pergaminho (a cada 200):</span>
                         <input type="number" class="field-input" id="adm-price-pergaminho" step="0.50">
                         <span class="field-label">Arumaka (cada):</span>
@@ -530,15 +532,13 @@
                         <input type="number" class="field-input" id="adm-price-gold" step="0.10">
                         <span class="field-label">Baú da Ceifadora:</span>
                         <input type="number" class="field-input" id="adm-price-bau" step="1">
-                        </div>
                     </div>
-                    <button class="save-btn" onclick="adminSave()">💾 Salvar Tudo</button>
-                    <div class="sync-status" id="syncStatus"></div>
+                    <button class="save-btn" onclick="adminSave()">💾 Salvar Preços</button>
                     <div class="sync-status" id="syncStatusPrecos"></div>
 
                     <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <h3>➕ Consumível Extra</h3>
+                        <h3>🧪 Cadastrar Consumível</h3>
                         <span class="field-label">Nome:</span>
                         <input type="text" class="field-input" id="adm-extra-nome" placeholder="Ex: Pedra da Serpente">
                         <span class="field-label">Link da imagem:</span>
