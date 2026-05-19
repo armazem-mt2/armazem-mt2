@@ -1127,8 +1127,34 @@
             window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank');
         }
 
-        function openAdmin() { document.getElementById('adminModal').style.display = 'block'; setTimeout(() => document.getElementById('adminPass').focus(), 100); }
-        function closeAdmin() { document.getElementById('adminModal').style.display = 'none'; document.getElementById('adminPass').value = ''; document.getElementById('adminPanel').style.display = 'none'; document.getElementById('loginBtn').style.display = 'block'; }
+        function openAdmin() {
+            document.getElementById('adminModal').style.display = 'block';
+            // Verifica se tem token salvo válido
+            const saved = sessionStorage.getItem('adminToken');
+            if (saved) {
+                authToken = saved;
+                // Tenta entrar direto
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('adm-stock-pergaminho').value = shopData.stock.pergaminho;
+                document.getElementById('adm-stock-leitura').value = shopData.stock.leitura;
+                document.getElementById('adm-stock-metal').value = shopData.stock.metal;
+                document.getElementById('adm-stock-gold').value = shopData.stock.gold;
+                document.getElementById('adm-stock-bau').value = shopData.stock.bau;
+                document.getElementById('adm-price-pergaminho').value = shopData.prices.pergaminho;
+                document.getElementById('adm-price-leitura').value = shopData.prices.leitura;
+                document.getElementById('adm-price-metal').value = shopData.prices.metal;
+                document.getElementById('adm-price-gold').value = shopData.prices.gold;
+                document.getElementById('adm-price-bau').value = shopData.prices.bau;
+                document.getElementById('adm-sales').value = shopData.sales;
+            } else {
+                setTimeout(() => document.getElementById('adminPass').focus(), 100);
+            }
+        }
+        function closeAdmin() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminPass').value = '';
+        }
 
         async function adminLogin() {
             const password = document.getElementById('adminPass').value;
@@ -1144,6 +1170,7 @@
                 const data = await res.json();
                 if (data.success) {
                     authToken = data.token;
+                    sessionStorage.setItem('adminToken', authToken);
                     document.getElementById('adminPanel').style.display = 'block';
                     loginBtn.style.display = 'none';
                     document.getElementById('adm-stock-pergaminho').value = shopData.stock.pergaminho;
@@ -1236,7 +1263,14 @@
             document.getElementById('imgModal').classList.remove('open');
             document.body.style.overflow = '';
         }
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharImgModal(); });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                fecharImgModal();
+                fecharComoModal();
+                fecharEditModal();
+                if (document.getElementById('adminModal').style.display === 'block') closeAdmin();
+            }
+        });
 
         // ===== CONSUMÍVEIS EXTRAS =====
         function renderConsumiveisExtras() {
