@@ -460,6 +460,8 @@
                     <div class="item-subtotal" id="sub-bau"></div>
                 </div>
             </div>
+            <!-- Consumíveis extras cadastrados pelo admin -->
+            <div id="extra-consumiveis-grid" class="items-grid"></div>
         </div>
         
         
@@ -533,6 +535,23 @@
                     <button class="save-btn" onclick="adminSave()">💾 Salvar Tudo</button>
                     <div class="sync-status" id="syncStatus"></div>
                     <div class="sync-status" id="syncStatusPrecos"></div>
+
+                    <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
+                    <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
+                        <h3>➕ Consumível Extra</h3>
+                        <span class="field-label">Nome:</span>
+                        <input type="text" class="field-input" id="adm-extra-nome" placeholder="Ex: Pedra da Serpente">
+                        <span class="field-label">Emoji/ícone:</span>
+                        <input type="text" class="field-input" id="adm-extra-emoji" placeholder="Ex: 🔮" maxlength="4">
+                        <span class="field-label">Preço (R$):</span>
+                        <input type="number" class="field-input" id="adm-extra-preco" step="0.10" min="0" placeholder="Ex: 2.50">
+                        <span class="field-label">Unidade:</span>
+                        <input type="text" class="field-input" id="adm-extra-unidade" placeholder="Ex: cada, a cada 10">
+                        <span class="field-label">Estoque inicial:</span>
+                        <input type="number" class="field-input" id="adm-extra-stock" min="0" placeholder="Ex: 100">
+                        <button class="save-btn" style="margin-top:12px;" onclick="adicionarConsumivel()">➕ Adicionar</button>
+                        <div style="margin-top:12px;" id="adm-extra-lista"></div>
+                    </div>
                 </div>
 
                 <!-- ABA ITENS -->
@@ -619,7 +638,8 @@
             prices: { pergaminho: 10, leitura: 1.50, metal: 10, gold: 0.40, bau: 15 },
             sales: 0,
             promo: { active: false, pct: 0, msg: '' },
-            itens: []
+            itens: [],
+            consumiveis: []
         };
         let shopData = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
@@ -715,6 +735,7 @@
             });
             updateCart();
             renderItens();
+            renderConsumiveisExtras();
         }
 
         let salesAnimTimer = null;
@@ -730,6 +751,14 @@
                 el.textContent = Math.round(start + (target - start) * (step / steps));
                 if (step >= steps) { clearInterval(salesAnimTimer); el.textContent = target; }
             }, duration / steps);
+        }
+
+        function cartChangeQtyExtra(index, dir) {
+            const input = document.getElementById('qty-extra-' + index);
+            if (!input) return;
+            input.value = Math.max(0, (parseInt(input.value) || 0) + dir);
+            changeQtyExtra(index, 0);
+            updateCart();
         }
 
         function cartChangeQty(item, dir) {
@@ -974,7 +1003,20 @@
                 } else { subEl.textContent = ''; }
             });
 
-            const cartContent = document.getElementById('cartContent');
+            // Consumíveis extras
+            const extras = shopData.consumiveis || [];
+            extras.forEach((c, i) => {
+                const input = document.getElementById('qty-extra-' + i);
+                if (!input) return;
+                const qty = parseInt(input.value) || 0;
+                if (qty > 0) {
+                    const sub = qty * parseFloat(c.preco);
+                    totalSemDesc += sub;
+                    totalComDesc += sub;
+                    count++;
+                    cartHTML += `<div class="cart-line"><div style="flex:1;min-width:0"><div class="cart-line-name">${qty}x ${c.nome}</div></div><div class="cart-line-right"><div class="cart-qty-ctrl"><button class="cart-qty-btn" onclick="cartChangeQtyExtra(${i},-1)">−</button><span class="cart-qty-num">${qty}</span><button class="cart-qty-btn" onclick="cartChangeQtyExtra(${i},1)">+</button></div><div class="cart-line-price">R$ ${sub.toFixed(2).replace('.',',')}</div></div></div>`;
+                }
+            });
             const clearBtn = document.getElementById('clearCartBtn');
             document.getElementById('cartCount').textContent = count;
 
@@ -1054,7 +1096,18 @@
                 }
             });
 
-            const useCartDiscount = totalSemDesc >= 300 && (totalSemDesc * 0.9) < totalComDesc;
+            // Consumíveis extras
+            (shopData.consumiveis || []).forEach((c, i) => {
+                const input = document.getElementById('qty-extra-' + i);
+                if (!input) return;
+                const qty = parseInt(input.value) || 0;
+                if (qty > 0) {
+                    const sub = qty * parseFloat(c.preco);
+                    totalSemDesc += sub;
+                    totalComDesc += sub;
+                    msg += '• ' + qty + 'x ' + c.nome + ' = R$ ' + sub.toFixed(2).replace('.', ',') + '\n';
+                }
+            });
             const finalTotal = useCartDiscount ? totalSemDesc * 0.9 : totalComDesc;
 
             msg += '\nSubtotal: R$ ' + (useCartDiscount ? totalSemDesc : totalComDesc).toFixed(2).replace('.', ',');
@@ -1178,6 +1231,98 @@
             document.body.style.overflow = '';
         }
         document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharImgModal(); });
+
+        // ===== CONSUMÍVEIS EXTRAS =====
+        function renderConsumiveisExtras() {
+            const grid = document.getElementById('extra-consumiveis-grid');
+            const lista = document.getElementById('adm-extra-lista');
+            const extras = shopData.consumiveis || [];
+
+            // Grid público
+            if (extras.length === 0) {
+                grid.innerHTML = '';
+            } else {
+                grid.innerHTML = extras.map((c, i) => {
+                    const esgotado = c.stock <= 0;
+                    return `<div class="item-card${esgotado ? ' esgotado' : ''}">
+                        <div class="item-emoji">${c.emoji || '📦'}</div>
+                        <div class="item-name">${c.nome}</div>
+                        <div class="item-price" id="extra-price-${i}">R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} ${c.unidade}</div>
+                        <div class="item-stock">Estoque: <strong id="extra-stock-${i}" class="${esgotado ? 'out' : ''}">${c.stock}</strong></div>
+                        ${esgotado ? '<div class="esgotado-badge">🚫 Esgotado</div>' : ''}
+                        <div class="qty-row">
+                            <button class="qty-btn" ${esgotado ? 'disabled' : ''} onclick="changeQtyExtra(${i},-1)">-</button>
+                            <input type="number" class="qty-input" id="qty-extra-${i}" value="0" min="0">
+                            <button class="qty-btn" ${esgotado ? 'disabled' : ''} onclick="changeQtyExtra(${i},1)">+</button>
+                        </div>
+                        <div class="item-subtotal" id="sub-extra-${i}"></div>
+                    </div>`;
+                }).join('');
+            }
+
+            // Lista no admin
+            if (!lista) return;
+            if (extras.length === 0) {
+                lista.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:8px;">Nenhum consumível extra cadastrado.</div>';
+            } else {
+                lista.innerHTML = extras.map((c, i) =>
+                    `<div class="adm-item-linha">
+                        <div class="adm-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">${c.emoji || '📦'}</div>
+                        <div class="adm-item-info"><strong>${c.nome}</strong><span>R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} ${c.unidade} • Estoque: ${c.stock}</span></div>
+                        <div class="adm-btn-wrap"><span class="adm-tooltip">Editar</span><button class="adm-item-edit" onclick="editarConsumivel(${i})">✏️</button></div>
+                        <div class="adm-btn-wrap"><span class="adm-tooltip">Remover</span><button class="adm-item-del" onclick="removerConsumivel(${i})">🗑</button></div>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function changeQtyExtra(index, delta) {
+            const input = document.getElementById('qty-extra-' + index);
+            const val = Math.max(0, (parseInt(input.value) || 0) + delta);
+            input.value = val;
+            const c = shopData.consumiveis[index];
+            const sub = val * parseFloat(c.preco);
+            const subEl = document.getElementById('sub-extra-' + index);
+            if (subEl) subEl.textContent = val > 0 ? 'R$ ' + sub.toFixed(2).replace('.', ',') : '';
+            updateCart();
+        }
+
+        async function adicionarConsumivel() {
+            const nome = document.getElementById('adm-extra-nome').value.trim();
+            const emoji = document.getElementById('adm-extra-emoji').value.trim();
+            const preco = parseFloat(document.getElementById('adm-extra-preco').value) || 0;
+            const unidade = document.getElementById('adm-extra-unidade').value.trim() || 'cada';
+            const stock = parseInt(document.getElementById('adm-extra-stock').value) || 0;
+            if (!nome) { alert('Digite o nome!'); return; }
+            if (preco <= 0) { alert('Digite um preço válido!'); return; }
+            if (!shopData.consumiveis) shopData.consumiveis = [];
+            shopData.consumiveis.push({ nome, emoji, preco, unidade, stock, id: Date.now() });
+            document.getElementById('adm-extra-nome').value = '';
+            document.getElementById('adm-extra-emoji').value = '';
+            document.getElementById('adm-extra-preco').value = '';
+            document.getElementById('adm-extra-unidade').value = '';
+            document.getElementById('adm-extra-stock').value = '';
+            renderConsumiveisExtras();
+            await saveDataOnline();
+        }
+
+        async function removerConsumivel(index) {
+            if (!confirm('Remover este consumível?')) return;
+            shopData.consumiveis.splice(index, 1);
+            renderConsumiveisExtras();
+            await saveDataOnline();
+        }
+
+        function editarConsumivel(index) {
+            const c = shopData.consumiveis[index];
+            document.getElementById('adm-extra-nome').value = c.nome;
+            document.getElementById('adm-extra-emoji').value = c.emoji || '';
+            document.getElementById('adm-extra-preco').value = c.preco;
+            document.getElementById('adm-extra-unidade').value = c.unidade;
+            document.getElementById('adm-extra-stock').value = c.stock;
+            shopData.consumiveis.splice(index, 1);
+            renderConsumiveisExtras();
+        }
 
         // ===== ITENS =====
         let admPaginaAtual = 0;
