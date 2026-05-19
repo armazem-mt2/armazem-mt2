@@ -699,6 +699,17 @@
                 });
                 if (res.ok) {
                     ids.forEach(id => { const el = document.getElementById(id); if(el){ el.className='sync-status sync-ok'; el.textContent='✅ Salvo online! Todos verão as mudanças.'; } });
+                } else if (res.status === 401) {
+                    // Token expirou — limpa sessão e pede login novamente
+                    authToken = null;
+                    sessionStorage.removeItem('adminToken');
+                    ids.forEach(id => { const el = document.getElementById(id); if(el){ el.className='sync-status sync-err'; el.textContent='⚠️ Sessão expirada. Faça login novamente.'; } });
+                    // Mostra o painel de login
+                    document.getElementById('adminPanel').style.display = 'none';
+                    document.getElementById('loginBtn').style.display = 'block';
+                    document.getElementById('loginBtn').textContent = '🔓 Entrar';
+                    document.getElementById('loginBtn').disabled = false;
+                    setTimeout(() => document.getElementById('adminPass').focus(), 100);
                 } else {
                     throw new Error('Erro ao salvar');
                 }
