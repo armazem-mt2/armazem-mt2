@@ -519,6 +519,7 @@
                         <span class="field-label">Gold (kk):</span>
                         <input type="number" class="field-input" id="adm-stock-gold" step="50">
                         <span class="field-label">Baú da Ceifadora:</span>
+                        <input type="number" class="field-input" id="adm-stock-bau">
                     </div>
                     <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
@@ -536,6 +537,7 @@
                         <span class="field-label">Gold (por 1kk):</span>
                         <input type="number" class="field-input" id="adm-price-gold" step="0.10">
                         <span class="field-label">Baú da Ceifadora:</span>
+                        <input type="number" class="field-input" id="adm-price-bau" step="1">
                         </div>
                     </div>
                     <button class="save-btn" onclick="adminSave()">💾 Salvar</button>
@@ -986,6 +988,7 @@
                 else if (item === 'leitura') preçoCheio = qty * p.leitura;
                 else if (item === 'metal') preçoCheio = qty * p.metal;
                 else if (item === 'gold') preçoCheio = qty * p.gold;
+                else if (item === ) preçoCheio = qty * p.bau;
                 return preçoCheio * (1 - promo.pct / 100);
             }
             // Sem promoção de desconto — usa lógica normal
@@ -1003,12 +1006,13 @@
             if (item === 'leitura') return qty * p.leitura;
             if (item === 'metal') return qty * p.metal;
             if (item === 'gold') return qty * p.gold;
+            if (item === ) return qty * p.bau;
             return 0;
         }
 
         function updateCart() {
             const items = ['pergaminho','leitura','metal','gold'];
-            const names = { pergaminho:'Pergaminho de Aprimoramento', leitura:'Leitura de Arumaka', metal:'Metal Mágico+', gold:'Gold' };
+            const names = { pergaminho:'Pergaminho de Aprimoramento', leitura:'Leitura de Arumaka', metal:'Metal Mágico+', gold:'Gold', bau:'Baú da Ceifadora' };
             let cartHTML = '', totalComDesc = 0, totalSemDesc = 0, count = 0;
             const p = shopData.prices;
             const fmt = v => 'R$ ' + v.toFixed(2).replace('.', ',');
@@ -1024,6 +1028,7 @@
                     else if (item === 'leitura') semDesc = qty * p.leitura;
                     else if (item === 'metal') semDesc = qty * p.metal;
                     else if (item === 'gold') semDesc = qty * p.gold;
+                    else if (item === ) semDesc = qty * p.bau;
 
                     // Preço com desconto por item + promoção
                     const comDesc = calcPriceWithPromo(item, qty);
@@ -1114,7 +1119,7 @@
 
         function sendOrder() {
             const items = ['pergaminho','leitura','metal','gold'];
-            const names = { pergaminho:'Pergaminho de Aprimoramento', leitura:'Leitura de Arumaka', metal:'Metal Mágico+', gold:'Gold' };
+            const names = { pergaminho:'Pergaminho de Aprimoramento', leitura:'Leitura de Arumaka', metal:'Metal Mágico+', gold:'Gold', bau:'Baú da Ceifadora' };
             const p = shopData.prices;
             let msg = 'Olá! Gostaria de fazer um pedido no MT2 Zeta:\n\n';
             let totalSemDesc = 0, totalComDesc = 0;
@@ -1127,6 +1132,7 @@
                     else if (item === 'leitura') semDesc = qty * p.leitura;
                     else if (item === 'metal') semDesc = qty * p.metal;
                     else if (item === 'gold') semDesc = qty * p.gold;
+                    else if (item === ) semDesc = qty * p.bau;
                     const comDesc = calcPrice(item, qty);
                     totalSemDesc += semDesc;
                     totalComDesc += comDesc;
