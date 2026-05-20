@@ -647,6 +647,7 @@
             consumiveis: []
         };
         let shopData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        let useCartDiscount = false;
 
         function showLoading(pct) {
             document.getElementById('loadingBarInner').style.width = pct + '%';
@@ -1080,7 +1081,7 @@
                 }
 
                 // Desconto R$300 só se promoção de desconto NÃO estiver ativa
-                const useCartDiscount = !promoDescontoAtiva && totalSemDesc >= DISCOUNT_THRESHOLD && (totalSemDesc * 0.9) < totalComDesc;
+                useCartDiscount = !promoDescontoAtiva && totalSemDesc >= DISCOUNT_THRESHOLD && (totalSemDesc * 0.9) < totalComDesc;
                 const cartDiscountVal = totalSemDesc * DISCOUNT_RATE;
                 const totalComCartDesc = totalSemDesc - cartDiscountVal;
                 const finalTotal = useCartDiscount ? totalComCartDesc : totalComDesc;
