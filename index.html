@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -165,19 +165,6 @@
         .adm-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
         .adm-tab:hover:not(.active) { background: rgba(255,255,255,0.05); }
         .adm-panel { display: none; }
-        .pendente-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
-        .pendente-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-        .pendente-tipo { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .pendente-tipo.consumivel { background: rgba(124,91,245,0.15); color: var(--accent-light); }
-        .pendente-tipo.item { background: rgba(251,191,36,0.15); color: var(--gold); }
-        .pendente-data { font-size: 11px; color: var(--text-muted); margin-left: auto; }
-        .pendente-campo { margin-bottom: 10px; }
-        .pendente-campo label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .pendente-campo input { width: 100%; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 14px; font-family: Outfit,sans-serif; box-sizing: border-box; }
-        .pendente-campo input:focus { outline: none; border-color: var(--accent); }
-        .pendente-acoes { display: flex; gap: 8px; margin-top: 14px; }
-        .btn-aprovar { flex: 1; padding: 10px; border-radius: 8px; border: none; background: linear-gradient(135deg,#34d399,#059669); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: Outfit,sans-serif; }
-        .btn-rejeitar { padding: 10px 18px; border-radius: 8px; border: 1px solid rgba(248,113,113,0.4); background: rgba(248,113,113,0.1); color: var(--red); font-size: 14px; font-weight: 700; cursor: pointer; font-family: Outfit,sans-serif; }
         .adm-panel.active { display: block; }
         @media (max-width: 768px) {
             .logo { font-size: 38px; }
@@ -276,10 +263,10 @@
         .tab-sorte.active, .tab-sorte:hover { background: linear-gradient(135deg, rgba(251,191,36,0.35), rgba(245,158,11,0.25)) !important; }
         @keyframes sortePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); } 50% { box-shadow: 0 0 12px 3px rgba(251,191,36,0.25); } }
         .sub-tab-content { display: none; }
-        .sub-tabs-wrapper { border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-        .sub-tab { padding: 10px 20px; border-radius: 0; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s; font-family: Outfit,sans-serif; }
-        .sub-tab.active { color: var(--accent-light); border-bottom: 2px solid var(--accent-light); background: transparent; }
-        .sub-tab:hover:not(.active) { color: var(--text); background: transparent; }
+        .sub-tabs-wrapper { border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; }
+        .sub-tab { padding: 10px 24px; border-radius: 0; border: none; border-bottom: 3px solid transparent; background: transparent; color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.25s; font-family: Outfit,sans-serif; }
+        .sub-tab.active { color: var(--accent-light); border-bottom: 3px solid var(--accent-light); }
+        .sub-tab:hover:not(.active) { color: var(--text); }
         .sub-tab-content.active { display: block; }
         .fixed-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(13,12,20,0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--border); z-index: 900; padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
         .fixed-footer-label { font-size: 12px; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
@@ -321,85 +308,6 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-YP90J53P7C');
-
-        // ===== MODERAÇÃO DE PENDENTES =====
-        async function carregarPendentes() {
-            const lista = document.getElementById('lista-pendentes');
-            const badge = document.getElementById('badge-pendentes');
-            if (!lista) return;
-            lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;">⏳ Carregando...</p>';
-            try {
-                const res = await fetch(WORKER_URL + '/anuncio', {
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-                if (!res.ok) throw new Error('Sem acesso');
-                const data = await res.json();
-                const pendentes = (data.anuncios || []).filter(a => a.status === 'pendente');
-                if (pendentes.length === 0) {
-                    if (badge) badge.style.display = 'none';
-                    lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">✅ Nenhum anúncio pendente no momento.</p>';
-                    return;
-                }
-                if (badge) { badge.textContent = pendentes.length; badge.style.display = 'inline'; }
-                window._pendentesCache = pendentes;
-                lista.innerHTML = pendentes.map((a, i) => {
-                    const dt = new Date(a.data).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-                    const tipoClass = a.tipo === 'consumivel' ? 'consumivel' : 'item';
-                    const tipoLabel = a.tipo === 'consumivel' ? '🧪 Consumível' : '⚔️ Item';
-                    const imgField = a.tipo === 'item' ? '<div class="pendente-campo"><label>Imagem (URL)</label><input type="text" id="pend-img-' + i + '" value="' + (a.img || '') + '"></div>' : '';
-                    const qtdField = a.tipo === 'consumivel' ? '<div class="pendente-campo"><label>Quantidade</label><input type="text" id="pend-qtd-' + i + '" value="' + (a.quantidade || '') + '"></div>' : '';
-                    return '<div class="pendente-card">'
-                        + '<div class="pendente-card-header"><span class="pendente-tipo ' + tipoClass + '">' + tipoLabel + '</span><span class="pendente-data">📅 ' + dt + '</span></div>'
-                        + '<div class="pendente-campo"><label>Nome do Item</label><input type="text" id="pend-nome-' + i + '" value="' + (a.item || a.nome || '') + '"></div>'
-                        + imgField + qtdField
-                        + '<div class="pendente-campo"><label>Preço (R$)</label><input type="number" id="pend-preco-' + i + '" value="' + (a.preco || '') + '" step="0.01" min="0"></div>'
-                        + '<div class="pendente-campo"><label>WhatsApp do Vendedor</label><input type="text" id="pend-whats-' + i + '" value="' + (a.whatsapp || '') + '"></div>'
-                        + '<div class="pendente-acoes">'
-                        + '<button class="btn-aprovar" onclick="aprovarAnuncio(' + i + ', \'' + a.tipo + '\', \'' + a.id + '\')">✅ Aprovar e Publicar</button>'
-                        + '<button class="btn-rejeitar" onclick="rejeitarAnuncio(\'' + a.id + '\')">❌ Rejeitar</button>'
-                        + '</div></div>';
-                }).join('');
-            } catch(e) {
-                lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">❌ Erro ao carregar. Verifique se está logado.</p>';
-            }
-        }
-
-        async function aprovarAnuncio(i, tipo, id) {
-            const nome = document.getElementById('pend-nome-' + i).value.trim();
-            const preco = parseFloat(document.getElementById('pend-preco-' + i).value) || 0;
-            const whatsapp = document.getElementById('pend-whats-' + i).value.trim();
-            if (!nome || preco <= 0) { alert('Preencha nome e preço corretamente.'); return; }
-            if (tipo === 'consumivel') {
-                const qtd = document.getElementById('pend-qtd-' + i) ? document.getElementById('pend-qtd-' + i).value.trim() : '';
-                if (!shopData.consumiveis) shopData.consumiveis = [];
-                shopData.consumiveis.push({ nome, preco, whatsapp, quantidade: qtd, id: Date.now() });
-            } else {
-                const imgEl = document.getElementById('pend-img-' + i);
-                const img = imgEl ? imgEl.value.trim() : '';
-                if (!shopData.itens) shopData.itens = [];
-                shopData.itens.push({ nome, preco, img, whatsapp, vendedor: 'jhonny', id: Date.now() });
-            }
-            await saveDataOnline();
-            try {
-                await fetch(WORKER_URL + '/anuncio/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-            } catch(e) {}
-            carregarPendentes();
-            renderAll();
-        }
-
-        async function rejeitarAnuncio(id) {
-            if (!confirm('Rejeitar este anúncio? Ele será removido permanentemente.')) return;
-            try {
-                await fetch(WORKER_URL + '/anuncio/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-            } catch(e) {}
-            carregarPendentes();
-        }
     </script>
 </head>
 <body>
@@ -599,7 +507,7 @@
                     <button class="adm-tab" onclick="switchAdmTab('consumiveis',this)">🧪 Consumíveis</button>
                     <button class="adm-tab" onclick="switchAdmTab('itens',this)">⚔️ Itens</button>
                     <button class="adm-tab" onclick="switchAdmTab('promo',this)">🎉 Promoção</button>
-                    <button class="adm-tab" id="tab-btn-pendentes" onclick="switchAdmTab('pendentes',this);carregarPendentes()">📋 Pendentes <span id="badge-pendentes" style="display:none;background:#f87171;color:#fff;border-radius:50%;padding:1px 6px;font-size:11px;margin-left:4px;">0</span></button>
+                    <button class="adm-tab" onclick="switchAdmTab('pendentes',this)">📋 Pendentes</button>
                 </div>
 
                 <!-- ABA ESTOQUE -->
@@ -614,8 +522,6 @@
                         <input type="number" class="field-input" id="adm-stock-metal">
                         <span class="field-label">Gold (kk):</span>
                         <input type="number" class="field-input" id="adm-stock-gold" step="50">
-                        <span class="field-label">Baú da Ceifadora:</span>
-                        <input type="number" class="field-input" id="adm-stock-bau">
                     </div>
                     <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
@@ -632,8 +538,6 @@
                         <input type="number" class="field-input" id="adm-price-metal" step="0.50">
                         <span class="field-label">Gold (por 1kk):</span>
                         <input type="number" class="field-input" id="adm-price-gold" step="0.10">
-                        <span class="field-label">Baú da Ceifadora:</span>
-                        <input type="number" class="field-input" id="adm-price-bau" step="1">
                         </div>
                     </div>
                     <button class="save-btn" onclick="adminSave()">💾 Salvar</button>
@@ -729,11 +633,11 @@
                 <!-- ABA PENDENTES -->
                 <div class="adm-panel" id="adm-pendentes">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                            <h3 style="margin:0;">📋 Anúncios Pendentes</h3>
-                            <button onclick="carregarPendentes()" style="padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:Outfit,sans-serif;">🔄 Atualizar</button>
+                        <h3>📋 Anúncios Pendentes</h3>
+                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Revise os anúncios enviados por jogadores antes de publicá-los.</p>
+                        <div id="pendentes-lista" style="display:flex;flex-direction:column;gap:12px;">
+                            <p style="text-align:center;color:var(--text-muted);font-size:14px;">Carregando...</p>
                         </div>
-                        <div id="lista-pendentes"><p style="text-align:center;color:var(--text-muted);font-size:14px;">Clique em Atualizar para carregar.</p></div>
                     </div>
                 </div>
 
@@ -750,15 +654,15 @@
         let authToken = null;
 
         const DEFAULT_DATA = {
-            stock: { pergaminho: 5000, leitura: 200, metal: 50, gold: 500, bau: 10 },
-            prices: { pergaminho: 10, leitura: 1.50, metal: 10, gold: 0.40, bau: 15 },
+            stock: { pergaminho: 5000, leitura: 200, metal: 50, gold: 500 },
+            prices: { pergaminho: 10, leitura: 1.50, metal: 10, gold: 0.40 },
             sales: 0,
             promo: { active: false, pct: 0, msg: '' },
             itens: [],
             consumiveis: []
         };
-        let shopData = JSON.parse(JSON.stringify(DEFAULT_DATA));
         let useCartDiscount = false;
+        let shopData = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
         function showLoading(pct) {
             document.getElementById('loadingBarInner').style.width = pct + '%';
@@ -851,7 +755,7 @@
             document.getElementById('price-leitura').textContent = fmt(p.leitura) + ' cada';
             document.getElementById('price-metal').textContent = fmt(p.metal) + ' cada';
             document.getElementById('price-gold').textContent = fmt(p.gold) + ' por 1kk';
-            const lowLimits = { pergaminho: 400, leitura: 10, metal: 10, gold: 100, bau: 5 };
+            const lowLimits = { pergaminho: 400, leitura: 10, metal: 10, gold: 100 };
             ['pergaminho','leitura','metal','gold'].forEach(k => {
                 const el = document.getElementById('stock-' + k);
                 const low = document.getElementById('low-' + k);
@@ -947,6 +851,82 @@
             document.querySelectorAll('.adm-panel').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
             document.getElementById('adm-' + name).classList.add('active');
+            if (name === 'pendentes') carregarPendentes();
+        }
+
+        async function carregarPendentes() {
+            const lista = document.getElementById('pendentes-lista');
+            lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;">⏳ Carregando...</p>';
+            if (!authToken) {
+                lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">❌ Você precisa estar logado.</p>';
+                return;
+            }
+            try {
+                const res = await fetch(WORKER_URL + '/pendentes', {
+                    headers: { 'X-Auth-Token': authToken }
+                });
+                if (!res.ok) {
+                    if (res.status === 401 || res.status === 403) {
+                        authToken = null;
+                        sessionStorage.removeItem('adminToken');
+                        lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">⏰ Sessão expirada. Feche e faça login novamente.</p>';
+                    } else {
+                        lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">❌ Erro ao carregar pendentes.</p>';
+                    }
+                    return;
+                }
+                const data = await res.json();
+                const itens = data.pendentes || [];
+                if (itens.length === 0) {
+                    lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;">✅ Nenhum anúncio pendente.</p>';
+                    return;
+                }
+                lista.innerHTML = '';
+                itens.forEach(item => {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'background:rgba(0,0,0,0.25);border:1px solid rgba(124,91,245,0.2);border-radius:12px;padding:14px 16px;';
+                    const tipo = item.tipo === 'item' ? '⚔️ Item' : '🧪 Consumível';
+                    const data_fmt = item.data ? new Date(item.data).toLocaleString('pt-BR') : '—';
+                    card.innerHTML = `
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:160px;">
+                                <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">${tipo} · ${data_fmt}</div>
+                                <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${item.item || item.nome || '—'}</div>
+                                ${item.img ? `<img src="${item.img}" style="max-height:60px;border-radius:8px;margin-bottom:6px;display:block;">` : ''}
+                                <div style="font-size:13px;color:var(--text-secondary);">Qtd: ${item.quantidade || '—'} · Preço: R$ ${parseFloat(item.preco||0).toFixed(2).replace('.',',')} · WhatsApp: ${item.whatsapp || '—'}</div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <button onclick="aprovarAnuncio('${item.id}')" style="padding:8px 16px;background:linear-gradient(135deg,#34d399,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">✅ Aprovar</button>
+                                <button onclick="rejeitarAnuncio('${item.id}')" style="padding:8px 16px;background:linear-gradient(135deg,#f87171,#dc2626);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">❌ Rejeitar</button>
+                            </div>
+                        </div>`;
+                    lista.appendChild(card);
+                });
+            } catch(e) {
+                lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">❌ Erro de conexão. Tente novamente.</p>';
+            }
+        }
+
+        async function aprovarAnuncio(id) {
+            try {
+                const res = await fetch(WORKER_URL + '/pendentes/' + id + '/aprovar', {
+                    method: 'POST',
+                    headers: { 'X-Auth-Token': authToken }
+                });
+                if (res.ok) carregarPendentes();
+                else alert('Erro ao aprovar anúncio.');
+            } catch(e) { alert('Erro de conexão.'); }
+        }
+
+        async function rejeitarAnuncio(id) {
+            try {
+                const res = await fetch(WORKER_URL + '/pendentes/' + id + '/rejeitar', {
+                    method: 'POST',
+                    headers: { 'X-Auth-Token': authToken }
+                });
+                if (res.ok) carregarPendentes();
+                else alert('Erro ao rejeitar anúncio.');
+            } catch(e) { alert('Erro de conexão.'); }
         }
 
         function changeQty(item, delta) {
@@ -1740,85 +1720,6 @@
             requestAnimationFrame(drawBg);
         }
         drawBg();
-
-        // ===== MODERAÇÃO DE PENDENTES =====
-        async function carregarPendentes() {
-            const lista = document.getElementById('lista-pendentes');
-            const badge = document.getElementById('badge-pendentes');
-            if (!lista) return;
-            lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;">⏳ Carregando...</p>';
-            try {
-                const res = await fetch(WORKER_URL + '/anuncio', {
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-                if (!res.ok) throw new Error('Sem acesso');
-                const data = await res.json();
-                const pendentes = (data.anuncios || []).filter(a => a.status === 'pendente');
-                if (pendentes.length === 0) {
-                    if (badge) badge.style.display = 'none';
-                    lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">✅ Nenhum anúncio pendente no momento.</p>';
-                    return;
-                }
-                if (badge) { badge.textContent = pendentes.length; badge.style.display = 'inline'; }
-                window._pendentesCache = pendentes;
-                lista.innerHTML = pendentes.map((a, i) => {
-                    const dt = new Date(a.data).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-                    const tipoClass = a.tipo === 'consumivel' ? 'consumivel' : 'item';
-                    const tipoLabel = a.tipo === 'consumivel' ? '🧪 Consumível' : '⚔️ Item';
-                    const imgField = a.tipo === 'item' ? '<div class="pendente-campo"><label>Imagem (URL)</label><input type="text" id="pend-img-' + i + '" value="' + (a.img || '') + '"></div>' : '';
-                    const qtdField = a.tipo === 'consumivel' ? '<div class="pendente-campo"><label>Quantidade</label><input type="text" id="pend-qtd-' + i + '" value="' + (a.quantidade || '') + '"></div>' : '';
-                    return '<div class="pendente-card">'
-                        + '<div class="pendente-card-header"><span class="pendente-tipo ' + tipoClass + '">' + tipoLabel + '</span><span class="pendente-data">📅 ' + dt + '</span></div>'
-                        + '<div class="pendente-campo"><label>Nome do Item</label><input type="text" id="pend-nome-' + i + '" value="' + (a.item || a.nome || '') + '"></div>'
-                        + imgField + qtdField
-                        + '<div class="pendente-campo"><label>Preço (R$)</label><input type="number" id="pend-preco-' + i + '" value="' + (a.preco || '') + '" step="0.01" min="0"></div>'
-                        + '<div class="pendente-campo"><label>WhatsApp do Vendedor</label><input type="text" id="pend-whats-' + i + '" value="' + (a.whatsapp || '') + '"></div>'
-                        + '<div class="pendente-acoes">'
-                        + '<button class="btn-aprovar" onclick="aprovarAnuncio(' + i + ', \'' + a.tipo + '\', \'' + a.id + '\')">✅ Aprovar e Publicar</button>'
-                        + '<button class="btn-rejeitar" onclick="rejeitarAnuncio(\'' + a.id + '\')">❌ Rejeitar</button>'
-                        + '</div></div>';
-                }).join('');
-            } catch(e) {
-                lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">❌ Erro ao carregar. Verifique se está logado.</p>';
-            }
-        }
-
-        async function aprovarAnuncio(i, tipo, id) {
-            const nome = document.getElementById('pend-nome-' + i).value.trim();
-            const preco = parseFloat(document.getElementById('pend-preco-' + i).value) || 0;
-            const whatsapp = document.getElementById('pend-whats-' + i).value.trim();
-            if (!nome || preco <= 0) { alert('Preencha nome e preço corretamente.'); return; }
-            if (tipo === 'consumivel') {
-                const qtd = document.getElementById('pend-qtd-' + i) ? document.getElementById('pend-qtd-' + i).value.trim() : '';
-                if (!shopData.consumiveis) shopData.consumiveis = [];
-                shopData.consumiveis.push({ nome, preco, whatsapp, quantidade: qtd, id: Date.now() });
-            } else {
-                const imgEl = document.getElementById('pend-img-' + i);
-                const img = imgEl ? imgEl.value.trim() : '';
-                if (!shopData.itens) shopData.itens = [];
-                shopData.itens.push({ nome, preco, img, whatsapp, vendedor: 'jhonny', id: Date.now() });
-            }
-            await saveDataOnline();
-            try {
-                await fetch(WORKER_URL + '/anuncio/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-            } catch(e) {}
-            carregarPendentes();
-            renderAll();
-        }
-
-        async function rejeitarAnuncio(id) {
-            if (!confirm('Rejeitar este anúncio? Ele será removido permanentemente.')) return;
-            try {
-                await fetch(WORKER_URL + '/anuncio/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-            } catch(e) {}
-            carregarPendentes();
-        }
     </script>
 
     <!-- Modal Anunciar Consumível -->
@@ -2005,85 +1906,6 @@
                 msg.textContent = '❌ Erro ao enviar. Tente novamente.';
             }
         }
-
-        // ===== MODERAÇÃO DE PENDENTES =====
-        async function carregarPendentes() {
-            const lista = document.getElementById('lista-pendentes');
-            const badge = document.getElementById('badge-pendentes');
-            if (!lista) return;
-            lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;">⏳ Carregando...</p>';
-            try {
-                const res = await fetch(WORKER_URL + '/anuncio', {
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-                if (!res.ok) throw new Error('Sem acesso');
-                const data = await res.json();
-                const pendentes = (data.anuncios || []).filter(a => a.status === 'pendente');
-                if (pendentes.length === 0) {
-                    if (badge) badge.style.display = 'none';
-                    lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">✅ Nenhum anúncio pendente no momento.</p>';
-                    return;
-                }
-                if (badge) { badge.textContent = pendentes.length; badge.style.display = 'inline'; }
-                window._pendentesCache = pendentes;
-                lista.innerHTML = pendentes.map((a, i) => {
-                    const dt = new Date(a.data).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-                    const tipoClass = a.tipo === 'consumivel' ? 'consumivel' : 'item';
-                    const tipoLabel = a.tipo === 'consumivel' ? '🧪 Consumível' : '⚔️ Item';
-                    const imgField = a.tipo === 'item' ? '<div class="pendente-campo"><label>Imagem (URL)</label><input type="text" id="pend-img-' + i + '" value="' + (a.img || '') + '"></div>' : '';
-                    const qtdField = a.tipo === 'consumivel' ? '<div class="pendente-campo"><label>Quantidade</label><input type="text" id="pend-qtd-' + i + '" value="' + (a.quantidade || '') + '"></div>' : '';
-                    return '<div class="pendente-card">'
-                        + '<div class="pendente-card-header"><span class="pendente-tipo ' + tipoClass + '">' + tipoLabel + '</span><span class="pendente-data">📅 ' + dt + '</span></div>'
-                        + '<div class="pendente-campo"><label>Nome do Item</label><input type="text" id="pend-nome-' + i + '" value="' + (a.item || a.nome || '') + '"></div>'
-                        + imgField + qtdField
-                        + '<div class="pendente-campo"><label>Preço (R$)</label><input type="number" id="pend-preco-' + i + '" value="' + (a.preco || '') + '" step="0.01" min="0"></div>'
-                        + '<div class="pendente-campo"><label>WhatsApp do Vendedor</label><input type="text" id="pend-whats-' + i + '" value="' + (a.whatsapp || '') + '"></div>'
-                        + '<div class="pendente-acoes">'
-                        + '<button class="btn-aprovar" onclick="aprovarAnuncio(' + i + ', \'' + a.tipo + '\', \'' + a.id + '\')">✅ Aprovar e Publicar</button>'
-                        + '<button class="btn-rejeitar" onclick="rejeitarAnuncio(\'' + a.id + '\')">❌ Rejeitar</button>'
-                        + '</div></div>';
-                }).join('');
-            } catch(e) {
-                lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">❌ Erro ao carregar. Verifique se está logado.</p>';
-            }
-        }
-
-        async function aprovarAnuncio(i, tipo, id) {
-            const nome = document.getElementById('pend-nome-' + i).value.trim();
-            const preco = parseFloat(document.getElementById('pend-preco-' + i).value) || 0;
-            const whatsapp = document.getElementById('pend-whats-' + i).value.trim();
-            if (!nome || preco <= 0) { alert('Preencha nome e preço corretamente.'); return; }
-            if (tipo === 'consumivel') {
-                const qtd = document.getElementById('pend-qtd-' + i) ? document.getElementById('pend-qtd-' + i).value.trim() : '';
-                if (!shopData.consumiveis) shopData.consumiveis = [];
-                shopData.consumiveis.push({ nome, preco, whatsapp, quantidade: qtd, id: Date.now() });
-            } else {
-                const imgEl = document.getElementById('pend-img-' + i);
-                const img = imgEl ? imgEl.value.trim() : '';
-                if (!shopData.itens) shopData.itens = [];
-                shopData.itens.push({ nome, preco, img, whatsapp, vendedor: 'jhonny', id: Date.now() });
-            }
-            await saveDataOnline();
-            try {
-                await fetch(WORKER_URL + '/anuncio/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-            } catch(e) {}
-            carregarPendentes();
-            renderAll();
-        }
-
-        async function rejeitarAnuncio(id) {
-            if (!confirm('Rejeitar este anúncio? Ele será removido permanentemente.')) return;
-            try {
-                await fetch(WORKER_URL + '/anuncio/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-            } catch(e) {}
-            carregarPendentes();
-        }
     </script>
     <!-- Modal Anunciar Item -->
     <div id="modalAnuncioItem" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:3000;overflow-y:auto;">
@@ -2230,85 +2052,6 @@
                 msg.style.border = '1px solid rgba(248,113,113,0.3)';
                 msg.textContent = '❌ Erro ao enviar. Tente novamente.';
             }
-        }
-
-        // ===== MODERAÇÃO DE PENDENTES =====
-        async function carregarPendentes() {
-            const lista = document.getElementById('lista-pendentes');
-            const badge = document.getElementById('badge-pendentes');
-            if (!lista) return;
-            lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;">⏳ Carregando...</p>';
-            try {
-                const res = await fetch(WORKER_URL + '/anuncio', {
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-                if (!res.ok) throw new Error('Sem acesso');
-                const data = await res.json();
-                const pendentes = (data.anuncios || []).filter(a => a.status === 'pendente');
-                if (pendentes.length === 0) {
-                    if (badge) badge.style.display = 'none';
-                    lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">✅ Nenhum anúncio pendente no momento.</p>';
-                    return;
-                }
-                if (badge) { badge.textContent = pendentes.length; badge.style.display = 'inline'; }
-                window._pendentesCache = pendentes;
-                lista.innerHTML = pendentes.map((a, i) => {
-                    const dt = new Date(a.data).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-                    const tipoClass = a.tipo === 'consumivel' ? 'consumivel' : 'item';
-                    const tipoLabel = a.tipo === 'consumivel' ? '🧪 Consumível' : '⚔️ Item';
-                    const imgField = a.tipo === 'item' ? '<div class="pendente-campo"><label>Imagem (URL)</label><input type="text" id="pend-img-' + i + '" value="' + (a.img || '') + '"></div>' : '';
-                    const qtdField = a.tipo === 'consumivel' ? '<div class="pendente-campo"><label>Quantidade</label><input type="text" id="pend-qtd-' + i + '" value="' + (a.quantidade || '') + '"></div>' : '';
-                    return '<div class="pendente-card">'
-                        + '<div class="pendente-card-header"><span class="pendente-tipo ' + tipoClass + '">' + tipoLabel + '</span><span class="pendente-data">📅 ' + dt + '</span></div>'
-                        + '<div class="pendente-campo"><label>Nome do Item</label><input type="text" id="pend-nome-' + i + '" value="' + (a.item || a.nome || '') + '"></div>'
-                        + imgField + qtdField
-                        + '<div class="pendente-campo"><label>Preço (R$)</label><input type="number" id="pend-preco-' + i + '" value="' + (a.preco || '') + '" step="0.01" min="0"></div>'
-                        + '<div class="pendente-campo"><label>WhatsApp do Vendedor</label><input type="text" id="pend-whats-' + i + '" value="' + (a.whatsapp || '') + '"></div>'
-                        + '<div class="pendente-acoes">'
-                        + '<button class="btn-aprovar" onclick="aprovarAnuncio(' + i + ', \'' + a.tipo + '\', \'' + a.id + '\')">✅ Aprovar e Publicar</button>'
-                        + '<button class="btn-rejeitar" onclick="rejeitarAnuncio(\'' + a.id + '\')">❌ Rejeitar</button>'
-                        + '</div></div>';
-                }).join('');
-            } catch(e) {
-                lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">❌ Erro ao carregar. Verifique se está logado.</p>';
-            }
-        }
-
-        async function aprovarAnuncio(i, tipo, id) {
-            const nome = document.getElementById('pend-nome-' + i).value.trim();
-            const preco = parseFloat(document.getElementById('pend-preco-' + i).value) || 0;
-            const whatsapp = document.getElementById('pend-whats-' + i).value.trim();
-            if (!nome || preco <= 0) { alert('Preencha nome e preço corretamente.'); return; }
-            if (tipo === 'consumivel') {
-                const qtd = document.getElementById('pend-qtd-' + i) ? document.getElementById('pend-qtd-' + i).value.trim() : '';
-                if (!shopData.consumiveis) shopData.consumiveis = [];
-                shopData.consumiveis.push({ nome, preco, whatsapp, quantidade: qtd, id: Date.now() });
-            } else {
-                const imgEl = document.getElementById('pend-img-' + i);
-                const img = imgEl ? imgEl.value.trim() : '';
-                if (!shopData.itens) shopData.itens = [];
-                shopData.itens.push({ nome, preco, img, whatsapp, vendedor: 'jhonny', id: Date.now() });
-            }
-            await saveDataOnline();
-            try {
-                await fetch(WORKER_URL + '/anuncio/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-            } catch(e) {}
-            carregarPendentes();
-            renderAll();
-        }
-
-        async function rejeitarAnuncio(id) {
-            if (!confirm('Rejeitar este anúncio? Ele será removido permanentemente.')) return;
-            try {
-                await fetch(WORKER_URL + '/anuncio/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-Site-Secret': SITE_SECRET, 'Authorization': 'Bearer ' + authToken }
-                });
-            } catch(e) {}
-            carregarPendentes();
         }
     </script>
 </body>
