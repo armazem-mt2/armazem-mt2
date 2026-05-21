@@ -548,42 +548,17 @@
                 <!-- ABA CONSUMÍVEIS -->
                 <div class="adm-panel" id="adm-consumiveis">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <h3>🧪 Cadastrar Consumível</h3>
-                        <span class="field-label">Nome:</span>
-                        <input type="text" class="field-input" id="adm-extra-nome" placeholder="Ex: Pedra da Serpente">
-                        <span class="field-label">Link da imagem:</span>
-                        <input type="text" class="field-input" id="adm-extra-img" placeholder="https://i.imgur.com/...">
-                        <div class="imgur-hint">📎 Não tem link? <a href="https://imgur.com/upload" target="_blank">Clique aqui para hospedar sua imagem no Imgur</a></div>
-                        <span class="field-label">Preço (R$):</span>
-                        <input type="number" class="field-input" id="adm-extra-preco" step="0.10" min="0" placeholder="Ex: 2.50">
-                        <span class="field-label">Estoque inicial:</span>
-                        <input type="number" class="field-input" id="adm-extra-stock" min="0" placeholder="Ex: 100">
-                        <button class="save-btn" style="margin-top:12px;" onclick="adicionarConsumivel()">➕ Adicionar</button>
-                        <div style="margin-top:12px;" id="adm-extra-lista"></div>
+                        <h3>🧪 Consumíveis Cadastrados</h3>
+                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Itens aprovados pela aba Pendentes aparecem aqui automaticamente.</p>
+                        <div id="adm-extra-lista"></div>
                     </div>
                 </div>
 
                 <!-- ABA ITENS -->
                 <div class="adm-panel" id="adm-itens">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <h3>➕ Cadastrar Novo Item</h3>
-                        <span class="field-label">Nome do item (ex: Espada Venenosa+8):</span>
-                        <input type="text" class="field-input" id="adm-item-nome" placeholder="Ex: Espada Venenosa+8">
-                        <span class="field-label">Link da imagem:</span>
-                        <input type="text" class="field-input" id="adm-item-img" placeholder="https://i.imgur.com/...">
-                        <div class="imgur-hint">📎 Não tem link? <a href="https://imgur.com/upload" target="_blank">Clique aqui para hospedar sua imagem no Imgur</a></div>
-                        <span class="field-label">Preço (R$):</span>
-                        <input type="number" class="field-input" id="adm-item-preco" step="0.01" min="0" placeholder="Ex: 25.00">
-                        <span class="field-label">Vendedor:</span>
-                        <select class="field-input" id="adm-item-vendedor">
-                            <option value="jhonny">Jhonny</option>
-                            <option value="odeir">Odeir</option>
-                            <option value="juan">Juan</option>
-                        </select>
-                        <button class="save-btn" style="margin-top:12px;" onclick="adicionarItem()">➕ Adicionar Item</button>
-                    </div>
-                    <div class="admin-section">
-                        <h3>📋 Itens Cadastrados</h3>
+                        <h3>⚔️ Itens Cadastrados</h3>
+                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Itens aprovados pela aba Pendentes aparecem aqui automaticamente.</p>
                         <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
                             <input type="text" class="field-input" id="adm-itens-busca" placeholder="🔍 Buscar por nome..." oninput="renderItens()" style="flex:1;min-width:140px;margin:0;">
                             <select class="field-input" id="adm-itens-filtro" onchange="renderItens()" style="width:auto;margin:0;">
@@ -591,6 +566,7 @@
                                 <option value="jhonny">Jhonny</option>
                                 <option value="odeir">Odeir</option>
                                 <option value="juan">Juan</option>
+                                <option value="externo">Externo</option>
                             </select>
                         </div>
                         <div id="adm-itens-lista"></div>
@@ -1443,7 +1419,7 @@
                 lista.innerHTML = extras.map((c, i) =>
                     `<div class="adm-item-linha">
                         ${c.img ? `<img class="adm-item-thumb" src="${c.img}" onerror="this.src=''"/>` : `<div class="adm-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>`}
-                        <div class="adm-item-info"><strong>${c.nome}</strong><span>R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} ${c.unidade} • Estoque: ${c.stock}</span></div>
+                        <div class="adm-item-info"><strong>${c.nome}</strong><span>R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} cada • Estoque: ${c.stock}</span></div>
                         <div class="adm-btn-wrap"><span class="adm-tooltip">Editar</span><button class="adm-item-edit" onclick="editarConsumivel(${i})">✏️</button></div>
                         <div class="adm-btn-wrap"><span class="adm-tooltip">Remover</span><button class="adm-item-del" onclick="removerConsumivel(${i})">🗑</button></div>
                     </div>`
