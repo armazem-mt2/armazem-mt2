@@ -246,6 +246,8 @@
         .adm-item-del:hover { background: rgba(248,113,113,0.3); }
         .adm-item-edit { background: rgba(124,91,245,0.15); border: 1px solid rgba(124,91,245,0.3); color: var(--accent-light); border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: 'Outfit',sans-serif; transition: all 0.2s; flex-shrink: 0; }
         .adm-item-edit:hover { background: rgba(124,91,245,0.3); }
+        .adm-item-fav { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; border-radius: 6px; padding: 4px 8px; font-size: 15px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; line-height: 1; }
+        .adm-item-fav:hover { background: rgba(251,191,36,0.25); transform: scale(1.15); }
         .adm-btn-wrap { position: relative; display: inline-block; }
         .adm-btn-wrap .adm-tooltip { display: none; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: rgba(20,18,30,0.97); border: 1px solid var(--border); color: var(--text); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 300; font-family: 'Outfit',sans-serif; }
         .adm-btn-wrap:hover .adm-tooltip { display: block; }
@@ -1254,6 +1256,7 @@
                 </div>
                 <div class="item-subtotal" id="sub-extra-${i}"></div>`;
             return `<div class="item-card${esgotado ? ' esgotado' : ''}">
+                ${c.favorito ? '<div style="position:absolute;top:8px;left:10px;font-size:17px;" title="Destaque">⭐</div>' : ''}
                 ${imgHTML}
                 <div class="item-name">${c.nome}</div>
                 <div class="item-price">R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} ${unidade}</div>
@@ -1271,7 +1274,8 @@
             const extras = shopData.consumiveis || [];
 
             const adminItems  = extras.map((c, i) => ({c, i})).filter(({c}) => !c.whatsapp);
-            const playerItems = extras.map((c, i) => ({c, i})).filter(({c}) =>  c.whatsapp);
+            const playerItems = extras.map((c, i) => ({c, i})).filter(({c}) =>  c.whatsapp)
+                .sort((a, b) => (b.c.favorito ? 1 : 0) - (a.c.favorito ? 1 : 0));
 
             // Grid Consumíveis (aba principal) — apenas itens do admin
             if (gridAdmin) {
@@ -1296,6 +1300,7 @@
                     `<div class="adm-item-linha">
                         ${c.img ? `<img class="adm-item-thumb" src="${c.img}" onerror="this.src=''"/>` : `<div class="adm-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>`}
                         <div class="adm-item-info"><strong>${c.nome}</strong><span>R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} cada • Estoque: ${c.stock}${c.whatsapp ? ' · 👤 Player' : ''}</span></div>
+                        <div class="adm-btn-wrap"><span class="adm-tooltip">${c.favorito ? 'Remover destaque' : 'Destacar'}</span><button class="adm-item-fav" onclick="toggleFavoritoConsumivel(${i})" title="${c.favorito ? 'Remover destaque' : 'Destacar'}">${c.favorito ? '⭐' : '☆'}</button></div>
                         <div class="adm-btn-wrap"><span class="adm-tooltip">Editar</span><button class="adm-item-edit" onclick="editarConsumivel(${i})">✏️</button></div>
                         <div class="adm-btn-wrap"><span class="adm-tooltip">Remover</span><button class="adm-item-del" onclick="removerConsumivel(${i})">🗑</button></div>
                     </div>`
@@ -1433,11 +1438,12 @@
             const paginacao = document.getElementById('adm-itens-paginacao');
             const itens = shopData.itens || [];
 
-            // Grid público
-            if (itens.length === 0) {
+            // Grid público (favoritos primeiro)
+            const itensOrdenados = itens.slice().sort((a, b) => (b.favorito ? 1 : 0) - (a.favorito ? 1 : 0));
+            if (itensOrdenados.length === 0) {
                 grid.innerHTML = '<div class="itens-empty">Nenhum item disponível no momento.<br>Volte em breve! 🔄</div>';
             } else {
-                grid.innerHTML = itens.map(item => {
+                grid.innerHTML = itensOrdenados.map(item => {
                     const v = VENDEDORES[item.vendedor] || VENDEDORES.jhonny;
                     const tel = item.whatsapp ? '55' + item.whatsapp.replace(/\D/g,'') : v.tel;
                     const nomeVendedor = item.whatsapp ? (item.nick || 'Anunciante') : v.nome;
@@ -1446,8 +1452,9 @@
                     const imgHTML = item.img
                         ? '<div class="item-card-img-wrap">' + previewHTML + '<img class="item-card-img" src="' + item.img + '" alt="' + item.nome + '" onclick="abrirImgModal(\'' + item.img + '\')" onerror="this.style.display=\'none\'"></div>'
                         : '<div class="item-card-img-placeholder">⚔️</div>';
-                    return '<div class="item-card-venda">'
-                        + previewHTML + imgHTML
+                    const favBadge = item.favorito ? '<div style="position:absolute;top:8px;left:10px;font-size:16px;" title="Destaque">⭐</div>' : '';
+                    return '<div class="item-card-venda" style="position:relative;">'
+                        + favBadge + imgHTML
                         + '<div class="item-card-body">'
                         + '<div class="item-card-nome">' + item.nome + '</div>'
                         + '<div class="item-card-vendedor">Vendedor: ' + nomeVendedor + '</div>'
@@ -1483,6 +1490,7 @@
                         + hoverImg
                         + (item.img ? '<img class="adm-item-thumb" src="' + item.img + '" onerror="this.src=\'\'"/>' : '<div class="adm-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">⚔️</div>')
                         + '<div class="adm-item-info"><strong>' + item.nome + '</strong><span>' + v.nome + ' • R$ ' + parseFloat(item.preco).toFixed(2).replace('.', ',') + '</span></div>'
+                        + '<div class="adm-btn-wrap"><span class="adm-tooltip">' + (item.favorito ? 'Remover destaque' : 'Destacar') + '</span><button class="adm-item-fav" onclick="toggleFavoritoItem(' + i + ')" title="' + (item.favorito ? 'Remover destaque' : 'Destacar') + '">' + (item.favorito ? '⭐' : '☆') + '</button></div>'
                         + '<div class="adm-btn-wrap"><span class="adm-tooltip">Editar nome e preço</span><button class="adm-item-edit" onclick="abrirEditModal(' + i + ')">✏️ Editar</button></div>'
                         + '<div class="adm-btn-wrap"><span class="adm-tooltip">Remover item</span><button class="adm-item-del" onclick="removerItem(' + i + ')">🗑</button></div>'
                         + '</div>';
@@ -1529,6 +1537,18 @@
         async function removerItem(index) {
             if (!confirm('Remover este item?')) return;
             shopData.itens.splice(index, 1);
+            renderItens();
+            await saveDataOnline();
+        }
+
+        async function toggleFavoritoConsumivel(index) {
+            shopData.consumiveis[index].favorito = !shopData.consumiveis[index].favorito;
+            renderConsumiveisExtras();
+            await saveDataOnline();
+        }
+
+        async function toggleFavoritoItem(index) {
+            shopData.itens[index].favorito = !shopData.itens[index].favorito;
             renderItens();
             await saveDataOnline();
         }
@@ -1688,13 +1708,10 @@
             metal:      { nome: 'Metal Mágico+',               unidade: 'cada' },
             gold:       { nome: 'Gold',                        unidade: 'por 1kk' }
         };
-        const PRECOS_FALLBACK = { pergaminho: 10, leitura: 1.50, metal: 10, gold: 0.40 };
+        const PRECOS_FALLBACK = { pergaminho: 8.00, leitura: 1.50, metal: 8.00, gold: 0.40 };
 
         function getPrecoMin(chave) {
-            if (typeof shopData !== 'undefined' && shopData.prices && shopData.prices[chave]) {
-                return shopData.prices[chave];
-            }
-            return PRECOS_FALLBACK[chave];
+            return PRECOS_FALLBACK[chave] || 0;
         }
 
         function fmt2(v) {
