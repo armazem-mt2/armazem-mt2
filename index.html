@@ -1435,12 +1435,19 @@
             }
         }
 
+        function getExtraStep(c) {
+            if (c.chave === 'gold') return 50;
+            if (c.chave === 'pergaminho') return 200;
+            return 1;
+        }
+
         function changeQtyExtra(index, delta) {
             const input = document.getElementById('qty-extra-' + index);
             const c = shopData.consumiveis[index];
-            let val = Math.max(0, (parseInt(input.value) || 0) + delta);
+            const step = getExtraStep(c);
+            let val = Math.max(0, (parseInt(input.value) || 0) + delta * step);
             if (val > c.stock) {
-                val = c.stock;
+                val = Math.floor(c.stock / step) * step;
                 input.style.borderColor = 'var(--red)';
                 setTimeout(() => input.style.borderColor = '', 1000);
             }
@@ -1454,10 +1461,12 @@
         function validateQtyExtra(index) {
             const input = document.getElementById('qty-extra-' + index);
             const c = shopData.consumiveis[index];
+            const step = getExtraStep(c);
             let val = parseInt(input.value) || 0;
             if (val < 0) val = 0;
+            if (step > 1) val = Math.round(val / step) * step;
             if (val > c.stock) {
-                val = c.stock;
+                val = Math.floor(c.stock / step) * step;
                 input.style.borderColor = 'var(--red)';
                 setTimeout(() => input.style.borderColor = '', 1000);
             }
