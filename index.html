@@ -448,41 +448,6 @@
                     <button class="adm-tab active" onclick="switchAdmTab('pendentes',this)">📋 Pendentes</button>
                 </div>
 
-                <!-- ABA ESTOQUE -->
-                <div class="adm-panel active" id="adm-estoque">
-                    <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <h3>📦 Atualizar Estoque</h3>
-                        <span class="field-label">Pergaminho de Aprimoramento:</span>
-                        <input type="number" class="field-input" id="adm-stock-pergaminho" step="200">
-                        <span class="field-label">Leitura de Arumaka:</span>
-                        <input type="number" class="field-input" id="adm-stock-leitura">
-                        <span class="field-label">Metal Mágico+:</span>
-                        <input type="number" class="field-input" id="adm-stock-metal">
-                        <span class="field-label">Gold (kk):</span>
-                        <input type="number" class="field-input" id="adm-stock-gold" step="50">
-                    </div>
-                    <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
-                    <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
-                        <div class="collapsible-header" onclick="togglePrecosCollapse()">
-                            <h3>💰 Alterar Preços</h3>
-                            <span class="collapsible-arrow" id="precosArrow">▼</span>
-                        </div>
-                        <div class="collapsible-body" id="precosBody">
-                        <span class="field-label">Pergaminho (a cada 200):</span>
-                        <input type="number" class="field-input" id="adm-price-pergaminho" step="0.50">
-                        <span class="field-label">Arumaka (cada):</span>
-                        <input type="number" class="field-input" id="adm-price-leitura" step="0.10">
-                        <span class="field-label">Metal Mágico+ (cada):</span>
-                        <input type="number" class="field-input" id="adm-price-metal" step="0.50">
-                        <span class="field-label">Gold (por 1kk):</span>
-                        <input type="number" class="field-input" id="adm-price-gold" step="0.10">
-                        </div>
-                    </div>
-                    <button class="save-btn" onclick="adminSave()">💾 Salvar</button>
-                    <div class="sync-status" id="syncStatus"></div>
-                    <div class="sync-status" id="syncStatusPrecos"></div>
-                </div>
-
                 <!-- ABA CONSUMÍVEIS -->
                 <div class="adm-panel" id="adm-consumiveis">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
@@ -545,7 +510,7 @@
                 </div>
 
                 <!-- ABA PENDENTES -->
-                <div class="adm-panel" id="adm-pendentes">
+                <div class="adm-panel active" id="adm-pendentes">
                     <div class="admin-section" style="margin-top:0;padding-top:0;border-top:none;">
                         <h3>📋 Anúncios Pendentes</h3>
                         <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Revise os anúncios enviados por jogadores antes de publicá-los.</p>
@@ -614,7 +579,7 @@
         }
 
         async function saveDataOnline() {
-            const ids = ['syncStatus','syncStatusPrecos','syncStatusItens','syncStatusPromo'];
+            const ids = ['syncStatusItens','syncStatusPromo'];
             ids.forEach(id => { const el = document.getElementById(id); if(el){ el.className='sync-status'; el.textContent='⏳ Salvando...'; } });
             // Proteção: nunca salvar itens ou consumiveis vazios por acidente
             if (!shopData.itens) shopData.itens = [];
@@ -747,7 +712,13 @@
                     if (res.status === 401 || res.status === 403) {
                         authToken = null;
                         sessionStorage.removeItem('adminToken');
-                        lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">⏰ Sessão expirada. Feche e faça login novamente.</p>';
+                        lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">⏰ Sessão expirada. Faça login novamente.</p>';
+                        const loginBtn = document.getElementById('loginBtn');
+                        document.getElementById('adminPanel').style.display = 'none';
+                        loginBtn.style.display = '';
+                        loginBtn.textContent = '🔓 Entrar';
+                        loginBtn.disabled = false;
+                        setTimeout(() => document.getElementById('adminPass').focus(), 100);
                     } else {
                         lista.innerHTML = '<p style="text-align:center;color:var(--red);font-size:14px;">❌ Erro ao carregar pendentes.</p>';
                     }
@@ -1145,15 +1116,8 @@
                 // Tenta entrar direto
                 document.getElementById('adminPanel').style.display = 'block';
                 document.getElementById('loginBtn').style.display = 'none';
-                document.getElementById('adm-stock-pergaminho').value = shopData.stock.pergaminho;
-                document.getElementById('adm-stock-leitura').value = shopData.stock.leitura;
-                document.getElementById('adm-stock-metal').value = shopData.stock.metal;
-                document.getElementById('adm-stock-gold').value = shopData.stock.gold;
-                document.getElementById('adm-price-pergaminho').value = shopData.prices.pergaminho;
-                document.getElementById('adm-price-leitura').value = shopData.prices.leitura;
-                document.getElementById('adm-price-metal').value = shopData.prices.metal;
-                document.getElementById('adm-price-gold').value = shopData.prices.gold;
                 document.getElementById('adm-sales').value = shopData.sales;
+                carregarPendentes();
             } else {
                 setTimeout(() => document.getElementById('adminPass').focus(), 100);
             }
@@ -1180,15 +1144,8 @@
                     sessionStorage.setItem('adminToken', authToken);
                     document.getElementById('adminPanel').style.display = 'block';
                     loginBtn.style.display = 'none';
-                    document.getElementById('adm-stock-pergaminho').value = shopData.stock.pergaminho;
-                    document.getElementById('adm-stock-leitura').value = shopData.stock.leitura;
-                    document.getElementById('adm-stock-metal').value = shopData.stock.metal;
-                    document.getElementById('adm-stock-gold').value = shopData.stock.gold;
-                    document.getElementById('adm-price-pergaminho').value = shopData.prices.pergaminho;
-                    document.getElementById('adm-price-leitura').value = shopData.prices.leitura;
-                    document.getElementById('adm-price-metal').value = shopData.prices.metal;
-                    document.getElementById('adm-price-gold').value = shopData.prices.gold;
                     document.getElementById('adm-sales').value = shopData.sales;
+                    carregarPendentes();
                 } else {
                     alert('Senha incorreta!');
                     loginBtn.textContent = '🔓 Entrar';
@@ -1202,14 +1159,6 @@
         }
 
         async function adminSave() {
-            shopData.stock.pergaminho = parseInt(document.getElementById('adm-stock-pergaminho').value) || 0;
-            shopData.stock.leitura = parseInt(document.getElementById('adm-stock-leitura').value) || 0;
-            shopData.stock.metal = parseInt(document.getElementById('adm-stock-metal').value) || 0;
-            shopData.stock.gold = parseInt(document.getElementById('adm-stock-gold').value) || 0;
-            shopData.prices.pergaminho = parseFloat(document.getElementById('adm-price-pergaminho').value) || 10;
-            shopData.prices.leitura = parseFloat(document.getElementById('adm-price-leitura').value) || 1.50;
-            shopData.prices.metal = parseFloat(document.getElementById('adm-price-metal').value) || 10;
-            shopData.prices.gold = parseFloat(document.getElementById('adm-price-gold').value) || 0.40;
             shopData.sales = parseInt(document.getElementById('adm-sales').value) || 0;
             renderAll();
             await saveDataOnline();
@@ -1250,13 +1199,6 @@
 
         function abrirComoModal() { document.getElementById('comoModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
         function fecharComoModal() { document.getElementById('comoModal').classList.remove('open'); document.body.style.overflow = ''; }
-        function togglePrecosCollapse() {
-            const body = document.getElementById('precosBody');
-            const arrow = document.getElementById('precosArrow');
-            body.classList.toggle('open');
-            arrow.classList.toggle('open');
-        }
-
         function abrirImgModal(src) {
             document.getElementById('imgModalImg').src = src;
             document.getElementById('imgModal').classList.add('open');
@@ -1316,6 +1258,7 @@
                 <div class="item-name">${c.nome}</div>
                 <div class="item-price">R$ ${parseFloat(c.preco).toFixed(2).replace('.',',')} ${unidade}</div>
                 <div class="item-stock">${c.chave === 'gold' ? 'Disponível' : 'Estoque'}: <strong id="extra-stock-${i}" class="${esgotado ? 'out' : ''}">${stockFmt}</strong></div>
+                ${c.nick ? `<div class="item-card-vendedor">Vendedor: ${c.nick}</div>` : ''}
                 ${esgotado ? '<div class="esgotado-badge">🚫 Esgotado</div>' : ''}
                 ${acaoHTML}
             </div>`;
@@ -1366,6 +1309,13 @@
             return 1;
         }
 
+        // Pergaminho: preço é por pack de 200, então dividimos val pelo tamanho do pack
+        function calcSubtotal(c, val) {
+            const preco = parseFloat(c.preco);
+            if (c.chave === 'pergaminho') return (val / 200) * preco;
+            return val * preco;
+        }
+
         function changeQtyExtraWpp(index, delta) {
             const input = document.getElementById('qty-wpp-' + index);
             const c = shopData.consumiveis[index];
@@ -1377,7 +1327,7 @@
                 setTimeout(() => input.style.borderColor = '', 1000);
             }
             input.value = val;
-            const sub = val * parseFloat(c.preco);
+            const sub = calcSubtotal(c, val);
             const subEl = document.getElementById('sub-wpp-' + index);
             if (subEl) subEl.textContent = val > 0 ? 'R$ ' + sub.toFixed(2).replace('.', ',') : '';
         }
@@ -1391,7 +1341,7 @@
             if (!whatsNum) return;
             const CHAVE_UNIT = { pergaminho: 'a cada 200', leitura: 'cada', metal: 'cada', gold: 'por 1kk' };
             const unidade = CHAVE_UNIT[c.chave] || 'cada';
-            const total = (val * parseFloat(c.preco)).toFixed(2).replace('.', ',');
+            const total = calcSubtotal(c, val).toFixed(2).replace('.', ',');
             const qtdStr = c.chave === 'gold' ? val + 'kk' : val + ' unidades';
             const msg = encodeURIComponent('Olá! Tenho interesse em comprar ' + qtdStr + ' de ' + c.nome + ' pelo valor de R$ ' + total + ' anunciado no Armazém MT2.');
             window.open('https://wa.me/55' + whatsNum + '?text=' + msg, '_blank');
@@ -1408,7 +1358,7 @@
                 setTimeout(() => input.style.borderColor = '', 1000);
             }
             input.value = val;
-            const sub = val * parseFloat(c.preco);
+            const sub = calcSubtotal(c, val);
             const subEl = document.getElementById('sub-extra-' + index);
             if (subEl) subEl.textContent = val > 0 ? 'R$ ' + sub.toFixed(2).replace('.', ',') : '';
             updateCart();
@@ -1427,7 +1377,7 @@
                 setTimeout(() => input.style.borderColor = '', 1000);
             }
             input.value = val;
-            const sub = val * parseFloat(c.preco);
+            const sub = calcSubtotal(c, val);
             const subEl = document.getElementById('sub-extra-' + index);
             if (subEl) subEl.textContent = val > 0 ? 'R$ ' + sub.toFixed(2).replace('.', ',') : '';
             updateCart();
@@ -1490,7 +1440,7 @@
                 grid.innerHTML = itens.map(item => {
                     const v = VENDEDORES[item.vendedor] || VENDEDORES.jhonny;
                     const tel = item.whatsapp ? '55' + item.whatsapp.replace(/\D/g,'') : v.tel;
-                    const nomeVendedor = item.whatsapp ? 'Anunciante' : v.nome;
+                    const nomeVendedor = item.whatsapp ? (item.nick || 'Anunciante') : v.nome;
                     const msg = encodeURIComponent('Olá! Vi o item "' + item.nome + '" no site do Armazém por R$ ' + parseFloat(item.preco).toFixed(2).replace('.', ',') + ' e tenho interesse. Ainda está disponível?' + (item.img ? '\n\n🖼 Ver item: ' + item.img : ''));
                     const previewHTML = item.img ? '<img class="item-img-preview" src="' + item.img + '" alt="preview">' : '';
                     const imgHTML = item.img
@@ -1721,6 +1671,9 @@
             <span class="field-label">Seu WhatsApp *</span>
             <input type="text" id="anuncio-whatsapp" class="field-input" placeholder="Ex: 47999001234" style="margin-top:6px;">
 
+            <span class="field-label">Seu nick no jogo *</span>
+            <input type="text" id="anuncio-nick" class="field-input" placeholder="Ex: DarkHunter" style="margin-top:6px;">
+
             <div id="anuncio-msg" style="display:none;margin-top:14px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:600;"></div>
 
             <button onclick="enviarAnuncioConsumivel()" style="width:100%;padding:14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;font-family:'Outfit',sans-serif;transition:all 0.3s;">Enviar para aprovação ✉️</button>
@@ -1770,6 +1723,7 @@
             document.getElementById('anuncio-quantidade').value = '';
             document.getElementById('anuncio-preco').value = '';
             document.getElementById('anuncio-whatsapp').value = '';
+            document.getElementById('anuncio-nick').value = '';
         }
 
         function fecharModalAnuncioConsumivel() {
@@ -1825,9 +1779,10 @@
             const qtd = document.getElementById('anuncio-quantidade').value.trim();
             const preco = document.getElementById('anuncio-preco').value.trim();
             const whats = document.getElementById('anuncio-whatsapp').value.trim();
+            const nick = document.getElementById('anuncio-nick').value.trim();
             const msg = document.getElementById('anuncio-msg');
 
-            if (!chave || !qtd || !preco || !whats) {
+            if (!chave || !qtd || !preco || !whats || !nick) {
                 msg.style.display = 'block';
                 msg.style.background = 'rgba(248,113,113,0.1)';
                 msg.style.color = 'var(--red)';
@@ -1876,6 +1831,7 @@
                         quantidade: qtd,
                         preco: parseFloat(preco),
                         whatsapp: whats.replace(/\D/g, ''),
+                        nick,
                         status: 'pendente',
                         data: new Date().toISOString()
                     })
@@ -1957,6 +1913,9 @@
             <span class="field-label">Seu WhatsApp *</span>
             <input type="text" id="anuncio-item-whatsapp" class="field-input" placeholder="Ex: 47999001234" style="margin-top:6px;">
 
+            <span class="field-label">Seu nick no jogo *</span>
+            <input type="text" id="anuncio-item-nick" class="field-input" placeholder="Ex: DarkHunter" style="margin-top:6px;">
+
             <div id="anuncio-item-msg" style="display:none;margin-top:14px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:600;"></div>
 
             <button onclick="enviarAnuncioItem()" style="width:100%;padding:14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;font-family:'Outfit',sans-serif;transition:all 0.3s;">Enviar para aprovação ✉️</button>
@@ -1971,6 +1930,7 @@
             document.getElementById('anuncio-item-img').value = '';
             document.getElementById('anuncio-item-preco').value = '';
             document.getElementById('anuncio-item-whatsapp').value = '';
+            document.getElementById('anuncio-item-nick').value = '';
             document.getElementById('anuncio-item-preview-wrap').style.display = 'none';
             document.getElementById('anuncio-item-preview').src = '';
         }
@@ -1994,9 +1954,10 @@
             const img = document.getElementById('anuncio-item-img').value.trim();
             const preco = document.getElementById('anuncio-item-preco').value.trim();
             const whats = document.getElementById('anuncio-item-whatsapp').value.trim();
+            const nick = document.getElementById('anuncio-item-nick').value.trim();
             const msg = document.getElementById('anuncio-item-msg');
 
-            if (!nome || !img || !preco || !whats) {
+            if (!nome || !img || !preco || !whats || !nick) {
                 msg.style.display = 'block';
                 msg.style.background = 'rgba(248,113,113,0.1)';
                 msg.style.color = 'var(--red)';
@@ -2029,6 +1990,7 @@
                         img,
                         preco: parseFloat(preco),
                         whatsapp: whats.replace(/\D/g, ''),
+                        nick,
                         status: 'pendente',
                         data: new Date().toISOString()
                     })
