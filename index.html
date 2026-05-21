@@ -757,7 +757,7 @@
                             <div style="flex:1;min-width:160px;">
                                 <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">${tipo} · ${data_fmt}</div>
                                 <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${item.item || item.nome || '—'}</div>
-                                ${item.img ? `<img src="${item.img}" style="max-height:60px;border-radius:8px;margin-bottom:6px;display:block;">` : ''}
+                                ${item.img ? `<div style="position:relative;display:inline-block;margin-bottom:6px;"><img src="${item.img}" onclick="abrirImgModal('${item.img}')" style="max-height:60px;border-radius:8px;display:block;cursor:zoom-in;" title="Clique para ampliar"><div style="position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.6);color:#fff;font-size:9px;padding:1px 4px;border-radius:4px;pointer-events:none;">🔍</div></div>` : ''}
                                 <div style="font-size:13px;color:var(--text-secondary);">Qtd: ${item.quantidade || '—'} · Preço: R$ ${parseFloat(item.preco||0).toFixed(2).replace('.',',')} · WhatsApp: ${item.whatsapp || '—'}</div>
                             </div>
                             <div style="display:flex;flex-direction:column;gap:8px;">
