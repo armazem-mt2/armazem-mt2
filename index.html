@@ -1260,16 +1260,16 @@
             const whatsNum = c.whatsapp ? c.whatsapp.replace(/\D/g,'') : '';
             const acaoHTML = whatsNum
                 ? `<div class="qty-row">
-                    <button class="qty-btn" ${esgotado ? 'disabled' : ''} onclick="changeQtyExtraWpp(${i},-1)">-</button>
+                    <button class="qty-btn" ${esgotado ? 'disabled' : ''} onpointerdown="if(!this.disabled)holdQtyStart(()=>changeQtyExtraWpp(${i},-1))" onpointerup="holdQtyStop()" onpointercancel="holdQtyStop()" onpointerleave="holdQtyStop()">-</button>
                     <input type="number" class="qty-input" id="qty-wpp-${i}" value="0" min="0" style="pointer-events:none;">
-                    <button class="qty-btn" ${esgotado ? 'disabled' : ''} onclick="changeQtyExtraWpp(${i},1)">+</button>
+                    <button class="qty-btn" ${esgotado ? 'disabled' : ''} onpointerdown="if(!this.disabled)holdQtyStart(()=>changeQtyExtraWpp(${i},1))" onpointerup="holdQtyStop()" onpointercancel="holdQtyStop()" onpointerleave="holdQtyStop()">+</button>
                 </div>
                 <div class="item-subtotal" id="sub-wpp-${i}"></div>
                 <button onclick="abrirWppExtra(${i})" ${esgotado ? 'disabled' : ''} class="item-card-btn" style="margin-top:8px;width:100%;box-sizing:border-box;border:none;cursor:pointer;font-family:'Outfit',sans-serif;">🛒 Tenho Interesse</button>`
                 : `<div class="qty-row">
-                    <button class="qty-btn" ${esgotado ? 'disabled' : ''} onclick="changeQtyExtra(${i},-1)">-</button>
+                    <button class="qty-btn" ${esgotado ? 'disabled' : ''} onpointerdown="if(!this.disabled)holdQtyStart(()=>changeQtyExtra(${i},-1))" onpointerup="holdQtyStop()" onpointercancel="holdQtyStop()" onpointerleave="holdQtyStop()">-</button>
                     <input type="number" class="qty-input" id="qty-extra-${i}" value="0" min="0" onchange="validateQtyExtra(${i})">
-                    <button class="qty-btn" ${esgotado ? 'disabled' : ''} onclick="changeQtyExtra(${i},1)">+</button>
+                    <button class="qty-btn" ${esgotado ? 'disabled' : ''} onpointerdown="if(!this.disabled)holdQtyStart(()=>changeQtyExtra(${i},1))" onpointerup="holdQtyStop()" onpointercancel="holdQtyStop()" onpointerleave="holdQtyStop()">+</button>
                 </div>
                 <div class="item-subtotal" id="sub-extra-${i}"></div>`;
             return `<div class="item-card${esgotado ? ' esgotado' : ''}">
@@ -1367,6 +1367,23 @@
             const qtdStr = c.chave === 'gold' ? val + 'kk' : val + ' unidades';
             const msg = encodeURIComponent('Olá! Tenho interesse em comprar ' + qtdStr + ' de ' + c.nome + ' pelo valor de R$ ' + total + ' anunciado no Armazém MT2.');
             window.open('https://wa.me/55' + whatsNum + '?text=' + msg, '_blank');
+        }
+
+        // Hold-to-repeat com aceleração para botões +/-
+        let _hqTimer = null;
+        function holdQtyStart(fn) {
+            holdQtyStop();
+            fn();
+            let delay = 400;
+            function loop() {
+                fn();
+                delay = Math.max(60, Math.floor(delay * 0.75));
+                _hqTimer = setTimeout(loop, delay);
+            }
+            _hqTimer = setTimeout(loop, 500);
+        }
+        function holdQtyStop() {
+            if (_hqTimer) { clearTimeout(_hqTimer); _hqTimer = null; }
         }
 
         function changeQtyExtra(index, delta) {
