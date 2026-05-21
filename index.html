@@ -1267,12 +1267,13 @@
         // ===== CONSUMÍVEIS EXTRAS =====
         function getImgPorChave(chave) {
             if (!chave) return null;
-            const stockEl = document.getElementById('stock-' + chave);
-            if (!stockEl) return null;
-            const card = stockEl.closest('.item-card');
-            if (!card) return null;
-            const img = card.querySelector('img');
-            return img ? img.src : null;
+            const IMAGENS_PADRAO = {
+                pergaminho: 'img/pergaminho.jpeg',
+                leitura: 'img/leitura.jpeg',
+                metal: 'img/metal.webp',
+                gold: 'img/gold.png'
+            };
+            return IMAGENS_PADRAO[chave] || null;
         }
 
         function buildConsumCard(c, i) {
