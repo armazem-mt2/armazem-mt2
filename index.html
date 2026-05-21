@@ -1885,8 +1885,8 @@
                     msg.style.background = 'rgba(52,211,153,0.1)';
                     msg.style.color = 'var(--green)';
                     msg.style.border = '1px solid rgba(52,211,153,0.2)';
-                    msg.textContent = '✅ Anúncio enviado! Aguarde a aprovação.';
-                    setTimeout(fecharModalAnuncioConsumivel, 2500);
+                    msg.innerHTML = '✅ Anúncio enviado com sucesso! Seu item será analisado e adicionado em breve.<br><span style="font-size:12px;margin-top:8px;display:block;color:var(--text-muted);">Quer aprovação mais rápida? <a href="https://wa.me/5547999006250?text=Ol%C3%A1%20Jhonny%21%20Acabei%20de%20enviar%20um%20an%C3%BAncio%20no%20Armaz%C3%A9m%20MT2%20e%20gostaria%20que%20fosse%20aprovado%20mais%20r%C3%A1pido." target="_blank" style="color:var(--accent-light);font-weight:700;text-decoration:none;">Fale comigo no WhatsApp ➡️</a></span>';
+                    setTimeout(fecharModalAnuncioConsumivel, 8000);
                 } else {
                     const texto = await res.text().catch(() => '');
                     console.error('Anuncio erro', res.status, texto);
@@ -2038,8 +2038,8 @@
                     msg.style.background = 'rgba(52,211,153,0.1)';
                     msg.style.color = 'var(--green)';
                     msg.style.border = '1px solid rgba(52,211,153,0.2)';
-                    msg.textContent = '✅ Anúncio enviado! Aguarde a aprovação.';
-                    setTimeout(fecharModalAnuncioItem, 2500);
+                    msg.innerHTML = '✅ Anúncio enviado com sucesso! Seu item será analisado e adicionado em breve.<br><span style="font-size:12px;margin-top:8px;display:block;color:var(--text-muted);">Quer aprovação mais rápida? <a href="https://wa.me/5547999006250?text=Ol%C3%A1%20Jhonny%21%20Acabei%20de%20enviar%20um%20an%C3%BAncio%20no%20Armaz%C3%A9m%20MT2%20e%20gostaria%20que%20fosse%20aprovado%20mais%20r%C3%A1pido." target="_blank" style="color:var(--accent-light);font-weight:700;text-decoration:none;">Fale comigo no WhatsApp ➡️</a></span>';
+                    setTimeout(fecharModalAnuncioItem, 8000);
                 } else {
                     throw new Error('Erro');
                 }
