@@ -1253,7 +1253,10 @@
                 : `<div style="font-size:48px;margin-bottom:8px;">📦</div>`;
             const CHAVE_UNIT = { pergaminho: 'a cada 200', leitura: 'cada', metal: 'cada', gold: 'por 1kk' };
             const unidade = CHAVE_UNIT[c.chave] || 'cada';
-            const stockFmt = c.chave === 'gold' ? c.stock + 'kk' : c.stock;
+            let stockFmt;
+            if (c.chave === 'gold') stockFmt = c.stock + 'kk';
+            else if (c.chave === 'pergaminho') stockFmt = Math.floor(c.stock / 200) + ' pack(s) de 200 unidades';
+            else stockFmt = c.stock;
             const whatsNum = c.whatsapp ? c.whatsapp.replace(/\D/g,'') : '';
             const acaoHTML = whatsNum
                 ? `<div class="qty-row">
